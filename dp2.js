@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const hbs = require('hbs');
 const app = express();
 
+const { dedicated_parents } = require('./modules/dedicatedParents');
+
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/dedicatedparents', {
     useNewUrlParser: true,
@@ -26,8 +28,8 @@ hbs.registerPartials(path.join(__dirname, 'views/partials'));
 
 // Route handling
 app.get('/', (req, res) => {
-    console.log("opening home");
-    res.render('home', { title: 'Home Page' });
+    const data = await dedicated_parents(req, res);
+    res.render('home', data );
 });
 
 // Error handling
