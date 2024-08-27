@@ -1,5 +1,4 @@
 import all_modules from './all_modules.js';
-import createModel from './createModel.js';
 import * as comments from './getComments.js';
 
 const blogPost = async function(req,res) {

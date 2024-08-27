@@ -1,7 +1,6 @@
 import all_modules from './all_modules.js';
 
 const causes = async function(req,res) { 
-    req.params.module = "causes";
     return {
         causes: await all_modules.causes(req,res), 
         futureEvents: await all_modules.futureEvents(req,res), 

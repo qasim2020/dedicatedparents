@@ -14,6 +14,9 @@ import blogs from './modules/blogs.js';
 import pages from './modules/pages.js';
 import contactUs from './modules/contactUs.js';
 import blogPost from './modules/blogPost.js';
+import page from './modules/page.js';
+import causeSingle from './modules/causeSingle.js';
+import teamMember from './modules/teamMember.js';
 
 // Create an Express application
 const app = express();
@@ -41,6 +44,10 @@ hbs.registerPartials(join(__dirname, 'views/partials'));
 
 // Serve static files
 app.use(express.static(join(__dirname, 'static')));
+
+hbs.registerHelper('toUpperCase', (str) => {
+    return str.toUpperCase()
+});
 
 hbs.registerHelper('splitComma', (val) => {
     let output = val.split(',').map(val => val.trim() );
@@ -106,18 +113,19 @@ app.get('/team', async (req,res) => {
 app.get('/team-member/:slug', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await teamMember(req,res);
+    console.log(data);
     res.render('team-member', data);
 });
 
 app.get('/cause/:slug', async (req,res) => {
     req.params.brand = "dedicated_parents";
-    const data = await cause(req,res);
+    const data = await causeSingle(req,res);
     res.render('cause', data);
 });
 
 app.get('/causes', async (req,res) => {
     req.params.brand = "dedicated_parents";
-    const data = await causesDocuments(req,res);
+    const data = await causes(req,res);
     res.render('causes', data);
 });
 
@@ -127,7 +135,7 @@ app.get('/contact-us', async (req,res) => {
     res.render('contact', data);
 });
 
-app.get('/blog-post/:slug', async (req,res) => {
+app.get('/blog/:slug', async (req,res) => { 
     req.params.brand = "dedicated_parents";
     const data = await blogPost(req,res);
     res.render('blog', data);
