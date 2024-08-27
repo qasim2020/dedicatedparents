@@ -74,4 +74,7 @@ const generateEmailContent = async ({ type, template, context, msg }) => {
     return msg;
 };
 
-export default sendMsgToEmail;
+export {
+    sendMail,
+    sendMsgToEmail
+};

@@ -21,7 +21,7 @@ import blogPost from './modules/blogPost.js';
 import page from './modules/page.js';
 import causeSingle from './modules/causeSingle.js';
 import teamMember from './modules/teamMember.js';
-import sendMsgToEmail from './modules/sendMsgToEmail.js';
+import { sendMsgToEmail } from './modules/sendMsgToEmail.js';
 
 // Create an Express application
 const app = express();
@@ -191,15 +191,24 @@ app.get('/page/:slug', async (req,res) => {
 });
 
 app.post('/sendMsgToEmail', async (req,res) => {
-    try {
-        req.params.brand = "dedicated_parents";
-        const data = await sendMsgToEmail(req,res);
+    req.params.brand = "dedicated_parents";
+    const data = await sendMsgToEmail(req,res);
+    if (data.success) {
         res.status(200).send(data);
-    } catch(e) {
-        console.log(e);
-        res.status(404).send('404 Not Found');
+    } else {
+        res.status(404).send('Could not send email!');
     }
 });
+
+app.post('/subscribe', async (req,res) => {
+    req.params.brand = "dedicated_parents";
+    const data = await subscribeEmail(req,res);
+    if (data.success) {
+        res.status(200).send("Successfully subscribed!");
+    } else {
+        res.status(404).send("Could not subscribe!");
+    }
+})
 
 app.post('/postComment', async (req,res) => {
     res.status(200).send("integrate this feature");

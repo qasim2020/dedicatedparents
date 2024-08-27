@@ -43,7 +43,7 @@ let myFuncs = {
         };
 
         $.ajax({
-            url: `/dedicated_parents/gen/data/subscribeCustomer/n`, 
+            url: `/subscribe`, 
             data: data, 
             method: "POST", 
             success: val => $(e.target).html("Check your inbox!")
