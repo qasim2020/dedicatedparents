@@ -10,61 +10,46 @@
         {{> header}}
     </head>
     <body>
-	
         {{> headerNav active='causes'}}
-
 		<div class="container">
-			
 			<div class="page-header">
 				<div class="row">
 					<div class="col-md-6 col-sm-6">
-                                            <h2 class="page-title">Our Causes</h2>
+						<h2 class="page-title">Our Causes</h2>
 					</div> <!-- /.col-md-6 -->
 					<div class="col-md-6 col-sm-6 hidden-xs back-home">
 						<a href="/">&larr; Go back Home</a>
 					</div> <!-- /.col-md-6 -->
 				</div> <!-- /.row -->
 			</div> <!-- /.page-header -->
-
 			<div class="row">
-				
 				<div class="col-md-8">
-
-                                        {{#each data.causes}}
+					{{#each causes}}
 					<div class="cause-list">
 						<div class="cause-thumb">
-                                                        <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_200,w_270/{{this.number}}/dedicatedparents/causes-photos/{{this.imgSlug}}" alt="">
+							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_200,w_270/{{this.number}}/dedicatedparents/causes-photos/{{this.imgSlug}}" alt="">
 						</div> <!-- /.cause-thumb -->
 						<div class="cause-content">
 							<div class="cause-holder-list clearfix">
 								<div class="progress">
-                                                                    <div class="progress-bar" role="progressbar" aria-valuenow="{{this.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{this.percent}}%;"></div>
+									<div class="progress-bar" role="progressbar" aria-valuenow="{{this.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{this.percent}}%;"></div>
 								</div>
-                                                                <span class="raised pull-left">{{this.raised}}</span>
-                                                                <span class="goal pull-right">{{this.target}}</span>
+								<span class="raised pull-left">{{this.raised}}</span>
+								<span class="goal pull-right">{{this.target}}</span>
 							</div>
-                                                        <h4 class="cause-title"><a href="/dedicated_parents/gen/page/d_pcause/{{this.slug}}">{{this.title}}</a></h4>
-                                                        <p>{{this.summary}}</p>
-                                                        <a href="/cause/{{this.slug}}" class="read-more">Read More &rarr;</a>
+							<h4 class="cause-title"><a href="/cause/{{this.slug}}">{{this.title}}</a></h4>
+							<p>{{this.summary}}</p>
+							<a href="/cause/{{this.slug}}" class="read-more">Read More &rarr;</a>
 						</div> <!-- /.cause-content -->
 					</div> <!-- /.cause-list -->
-                                        {{/each}}
-
+					{{/each}}
 				</div> <!-- /.col-md-8 -->
-
 				<div class="col-md-4">
-                                    {{> galleryPhotos}}
-                                    <!-- /.box-content -->
-                                    {{> upcomingEvents}}
-                                    <!-- /.box-content -->
+					{{> galleryPhotos}}
+					{{> upcomingEvents}}
 				</div> <!-- /.col-md-4 -->
-
 			</div> <!-- /.row -->
-
 		</div> <!-- /.container -->
-
-		
-                {{> footer}}
-
+		{{> footer}}
     </body>
 </html>

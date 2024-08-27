@@ -29,16 +29,16 @@
 			<div class="row">
 				
 				<div class="col-md-8">
-					{{#each data.blogs}}
+					{{#each pages}}
 					<div class="blog-list">
 						<div class="post-thumb">
 							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_242,w_300/{{this.number}}/dedicatedparents/pages-photos/{{this.imgSlug}}" alt="">
 						</div> <!-- /.blog-thumb -->
 						<div class="post-content">
-							<h4 class="post-title"><a href="/dedicated_parents/gen/page/d_ppage/{{this.slug}}">{{this.title}}</a></h4>
+							<h4 class="post-title"><a href="/page/{{this.slug}}">{{this.title}}</a></h4>
 							<p class="post-meta"><a href="#">{{this.date}}</a> with <a href="#">4 Comments</a></p>
 							<p>{{this.subtitle}}</p>
-							<a href="/dedicated_parents/gen/page/d_pblog/{{this.slug}}" class="read-more">Continue Reading &rarr;</a>
+							<a href="/page/{{this.slug}}" class="read-more">Continue Reading &rarr;</a>
 						</div> <!-- /.blog-content -->
 					</div> <!-- /.blog-list -->
 					{{/each}}

@@ -3,34 +3,33 @@ import hbs from 'hbs';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
 import { connect } from 'mongoose';
+
+import config from './config000.json' assert { type: 'json' };
+
 import landingPage from './modules/landingPage.js';
+import events from './modules/events.js';
+import team from './modules/team.js';
+import causes from './modules/causes.js';
+import blogs from './modules/blogs.js';
+import pages from './modules/pages.js';
+import contactUs from './modules/contactUs.js';
 
 // Create an Express application
 const app = express();
 
-// Get the __filename and __dirname equivalent
+// Get the __filename and __dirname blogsequivalent
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-import config from './config000.json' assert { type: 'json' };
-
-
 var envConfig = config['development'];
 Object.keys(envConfig).forEach((key) => {
-process.env[key] = envConfig[key];
+    process.env[key] = envConfig[key];
 });
 
 // Connect to MongoDB
-connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => {
-        console.log('MongoDB connected');
-    })
-    .catch((err) => {
-        console.error('MongoDB connection error:', err);
-    });
+connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
+    .then(() => { console.log('MongoDB connected'); })
+    .catch((err) => { console.error('MongoDB connection error:', err); });
 
 // Set up view engine
 app.set('view engine', 'hbs');
@@ -41,6 +40,14 @@ hbs.registerPartials(join(__dirname, 'views/partials'));
 
 // Serve static files
 app.use(express.static(join(__dirname, 'static')));
+
+hbs.registerHelper('reduceStringLength', function(string, length) {
+    return string.substring(0, length);
+});
+
+hbs.registerHelper('inc', (val) => {
+    return Number(val)+1;
+});
 
 hbs.registerHelper('getFormattedDateTimeMongoId', (objectId) => {
     if ( objectId == null ) return null;
@@ -126,11 +133,12 @@ app.get('/blogs', async (req,res) => {
     res.render('blogs', data);
 });
 
-app.get('/all-pages', async (req,res) => {
+app.get('/pages', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await pages(req,res);
     res.render('pages', data);
 });
+
 app.get('/page/:slug', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await page(req,res);

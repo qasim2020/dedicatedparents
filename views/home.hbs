@@ -28,14 +28,14 @@
                                         </span>
                                         <div class="u-cause clearfix">
                                             <dl class="inner-carousel clearfix">
-                                                {{#each data.causes}}
+                                                {{#each causes}}
                                                 <dt></dt>
                                                 <dd>
                                                     <a href="/cause/{{this.slug}}">{{this.title}}</a> |
                                                     {{this.summary}}
                                                 </dd>
                                                 {{/each}}
-                                                {{#each data.events}}
+                                                {{#each events}}
                                                 <dt></dt>
                                                 <dd>
                                                     <a href="/event/{{this.slug}}">{{this.title}}</a> | 
@@ -57,7 +57,7 @@
                                     <div class="col-md-8">
                                         <div class="flexslider">
                                             <ul class="slides">
-                                                {{#each data.events}}
+                                                {{#each events}}
                                                 <li>
                                                     <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_550,w_770/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
                                                     <div class="flex-caption">
@@ -121,9 +121,9 @@
                                         <i class="fa fa-globe"></i>
                                     </div>
                                     <div class="service-content">
-                                        <h4 class="service-title">{{data.threePages.education.title}}</h4>
-                                        <p>{{data.threePages.education.subtitle}}</p>
-                                        <a href="/page/{{data.threePages.education.slug}}" class="read-more">Read More &rarr;</a>
+                                        <h4 class="service-title">{{threePages.education.title}}</h4>
+                                        <p>{{threePages.education.subtitle}}</p>
+                                        <a href="/page/{{threePages.education.slug}}" class="read-more">Read More &rarr;</a>
                                     </div>
                                 </div>
                                 <!-- /.service-item -->
@@ -132,9 +132,9 @@
                                         <i class="fa fa-umbrella"></i>
                                     </div>
                                     <div class="service-content">
-                                        <h4 class="service-title">{{data.threePages.helpAndSupport.title}}</h4>
-                                        <p>{{data.threePages.helpAndSupport.subtitle}}.</p>
-                                        <a href="/page/{{data.threePages.helpAndSupport.slug}}" class="read-more">Read More &rarr;</a>
+                                        <h4 class="service-title">{{threePages.helpAndSupport.title}}</h4>
+                                        <p>{{threePages.helpAndSupport.subtitle}}.</p>
+                                        <a href="/page/{{threePages.helpAndSupport.slug}}" class="read-more">Read More &rarr;</a>
                                     </div>
                                 </div>
                                 <!-- /.service-item -->
@@ -143,9 +143,9 @@
                                         <i class="fa fa-group"></i>
                                     </div>
                                     <div class="service-content">
-                                        <h4 class="service-title">{{data.threePages.volunteering.title}}</h4>
-                                        <p>{{data.threePages.volunteering.subtitle}}.</p>
-                                        <a href="/page/{{data.threePages.volunteering.slug}}" class="read-more">Read More &rarr;</a>
+                                        <h4 class="service-title">{{threePages.volunteering.title}}</h4>
+                                        <p>{{threePages.volunteering.subtitle}}.</p>
+                                        <a href="/page/{{threePages.volunteering.slug}}" class="read-more">Read More &rarr;</a>
                                     </div>
                                 </div>
                                 <!-- /.service-item -->
@@ -162,7 +162,7 @@
                             </div>
                             <!-- /.row -->
                             <div class="row">
-                                {{#each data.causes}}
+                                {{#each causes}}
                                 <div class="col-md-3 col-sm-6 cause-grid">
                                     <div class="cause-thumb">
                                         <!-- <img src="http://placehold.it/255x200" alt=""> -->
@@ -215,7 +215,7 @@
                                     <div class="row">
                                         <div class="col-md-12 testimonials-wrapper">
                                             <ul class="testi-tabs clearfix">
-                                            {{#each data.staffs}}
+                                            {{#each staffs}}
                                                 <li {{#if (matchValues @index 0)}} class="active" {{/if}}>
                                                     <a href="#testi-content-0{{inc @index}}">
                                                     <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_70,w_70/v1680079430/dedicatedparents/team-photos/{{this.image}}" alt="">
@@ -224,7 +224,7 @@
                                             {{/each}}
                                             </ul>
                                             <div class="testi-wrapper">
-                                                {{#each data.staffs}}
+                                                {{#each staffs}}
                                                 <div id="testi-content-0{{inc @index}}" class="testi-content {{#if (matchValues @index 0)}}active{{/if}}">
                                                     <div class="testi-author">
                                                         <h6>{{this.title}}<span>{{this.role}}</span></h6>

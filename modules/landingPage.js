@@ -1,6 +1,6 @@
 import all_modules from './all_modules.js';
 
-let landingPage = async function(req, res) {
+const landingPage = async function(req, res) {
     req.params.module = req.query.lang || "en";
     let output = {
         events: await all_modules.pastThreeEvents(req,res),

@@ -24,14 +24,14 @@
 			</div> <!-- /.page-header -->
 			<div class="row">
 				<div class="col-md-8">
-					{{#each data.pastEvents}}
+					{{#each pastEvents}}
 					<div class="event-list">
 						<div class="event-thumb">
 							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_192,w_240/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
 						</div> <!-- /.event-thumb -->
 						<div class="event-content">
 							<h4 class="event-title">
-								<a href="/dedicated_parents/gen/page/d_pevent/{{this.slug}}">{{this.title}} </a>
+								<a href="/event/{{this.slug}}">{{this.title}} </a>
 							</h4>
 							<p>{{this.summary}}</p>
 							<div class="event-location">
