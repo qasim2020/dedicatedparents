@@ -43,7 +43,6 @@ hbs.registerPartials(join(__dirname, 'views/partials'));
 app.use(express.static(join(__dirname, 'static')));
 
 hbs.registerHelper('matchValues', (val1,val2) => {
-    console.log(val1, val2);
     try {
         return val1.toString().toLowerCase()  == val2.toString().toLowerCase();
     } catch(e) {
