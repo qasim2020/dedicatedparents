@@ -154,7 +154,6 @@ const all_modules = {
                 }
             ]
         ]);
-        console.log("future events done");
         return output;
 
     },
@@ -184,6 +183,14 @@ const all_modules = {
             val.imgSlug = val.bannerImg.split("/pages-photos/")[1]
             return val;
         });
+        return output;
+    },
+
+    blog: async function(req,res) {
+        let model = await createModel(`${req.params.brand}-blogs`);
+        let output = await model.findOne({slug: req.params.slug}).lean();
+        output.number = output.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
+        output.imgSlug = output.bannerImg.split("/blogs-photos/")[1];
         return output;
     }
 };

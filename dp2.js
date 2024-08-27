@@ -13,6 +13,7 @@ import causes from './modules/causes.js';
 import blogs from './modules/blogs.js';
 import pages from './modules/pages.js';
 import contactUs from './modules/contactUs.js';
+import blogPost from './modules/blogPost.js';
 
 // Create an Express application
 const app = express();
@@ -40,6 +41,11 @@ hbs.registerPartials(join(__dirname, 'views/partials'));
 
 // Serve static files
 app.use(express.static(join(__dirname, 'static')));
+
+hbs.registerHelper('splitComma', (val) => {
+    let output = val.split(',').map(val => val.trim() );
+    return output;
+});
 
 hbs.registerHelper('reduceStringLength', function(string, length) {
     return string.substring(0, length);
@@ -111,7 +117,7 @@ app.get('/cause/:slug', async (req,res) => {
 
 app.get('/causes', async (req,res) => {
     req.params.brand = "dedicated_parents";
-    const data = await causes(req,res);
+    const data = await causesDocuments(req,res);
     res.render('causes', data);
 });
 
@@ -121,7 +127,7 @@ app.get('/contact-us', async (req,res) => {
     res.render('contact', data);
 });
 
-app.get('/blog-post', async (req,res) => {
+app.get('/blog-post/:slug', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await blogPost(req,res);
     res.render('blog', data);

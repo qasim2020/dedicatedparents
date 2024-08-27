@@ -31,18 +31,18 @@
 				<div class="col-md-8">
 					<div class="blog-single">
 						<div class="post-image">
-<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_400,w_770/{{data.blog.number}}/dedicatedparents/blogs-photos/{{data.blog.imgSlug}}" alt="">
+<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_400,w_770/{{blog.number}}/dedicatedparents/blogs-photos/{{blog.imgSlug}}" alt="">
 							<div class="image-over">
-                                                            <span><i class="fa fa-user"></i>{{data.blog.author}}</span>
-                                                                <span><i class="fa fa-comments-o"></i>Comments <em>({{data.countComments}})</em></span>
-                                                                <span><i class="fa fa-calendar-o"></i>{{data.blog.date}}</span>
+                                <span><i class="fa fa-user"></i>{{blog.author}}</span>
+                                <span><i class="fa fa-comments-o"></i>Comments <em>({{countComments}})</em></span>
+                                <span><i class="fa fa-calendar-o"></i>{{blog.date}}</span>
 							</div>
 						</div> <!-- /.blog-thumb -->
 						<div class="post-content">
-                                                    {{{data.blog.post}}}
+                            {{{blog.post}}}
 							<div class="tags">
 								<span><i class="fa fa-tags"></i></span>
-                                                                {{#each (splitComma data.blog.tags)}}
+                                                                {{#each (splitComma blog.tags)}}
                                                                 <a href="#">{{this}}</a>
                                                                 {{/each}}
 							</div> <!-- /.tags -->
@@ -50,8 +50,8 @@
 					</div> <!-- /.blog-single -->
 
 					<div class="comments box-content">
-                                            <h4 class="widget-title"><span>Comments <em>({{data.countComments}})</em></span></h4>
-                                                {{#each data.comments}}
+                                            <h4 class="widget-title"><span>Comments <em>({{countComments}})</em></span></h4>
+                                                {{#each comments}}
                                                 <div class="comment post" data-id="{{this.comment._id}}">
 							<div class="author-thumb">
 								<img src="http://placehold.it/80x80" alt="">
@@ -211,7 +211,7 @@
             email: $(elem).closest(".comment-form").find("[name=email]").val(),
             comment: $(elem).closest(".comment-form").find("[name=comment]").val(),
             replyTo: $(elem).closest(".comment.post").attr("data-id"),
-            slug: "{{data.blog.slug}}",
+            slug: "{{blog.slug}}",
             page: "d_pblog"
         };
 
@@ -254,7 +254,7 @@
             email: $(elem).closest(".comment-form").find("[name=email]").val(),
             comment: $(elem).closest(".comment-form").find("[name=comment]").val(),
             replyTo: "none", 
-            slug: "{{data.blog.slug}}",
+            slug: "{{blog.slug}}",
             page: "d_pblog"
         };
 
