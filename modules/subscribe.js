@@ -1,11 +1,12 @@
 import { sendMail } from './sendMsgToEmail.js';
+import createModel from './createModel';
 
 const subscribe = async function(req, res) {
     try {
         const { brand } = req.params;
         const { email, firstName, lastName } = req.body;
 
-        const model = await this.createModel(`${brand}-subscribers`);
+        const model = await createModel(`${brand}-subscribers`);
         
         const isSubscribed = await checkSubscription(model, email);
         if (isSubscribed) {
@@ -88,11 +89,11 @@ const sendVerificationEmail = async function(brand, subscriber, verifyUrl) {
         brand,
     };
 
-    return await this.sendMail(emailOptions);
+    return await sendMail(emailOptions);
 };
 
 const logMailEvent = async function(brand, email, mailResponse) {
-    const logModel = await this.createModel(`${brand}-log`);
+    const logModel = await createModel(`${brand}-log`);
     await logModel.create({
         status: 200,
         text: `Email ${mailResponse.slug || 'verify-email'} sent to ${email}`,

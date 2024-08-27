@@ -22,6 +22,7 @@ import page from './modules/page.js';
 import causeSingle from './modules/causeSingle.js';
 import teamMember from './modules/teamMember.js';
 import { sendMsgToEmail } from './modules/sendMsgToEmail.js';
+import subscribe from './modules/subscribe.js';
 
 // Create an Express application
 const app = express();
@@ -196,7 +197,7 @@ app.post('/sendMsgToEmail', async (req,res) => {
     if (data.success) {
         res.status(200).send(data);
     } else {
-        res.status(404).send('Could not send email!');
+        res.status(data.status).send(data.error);
     }
 });
 
@@ -206,7 +207,7 @@ app.post('/subscribe', async (req,res) => {
     if (data.success) {
         res.status(200).send("Successfully subscribed!");
     } else {
-        res.status(404).send("Could not subscribe!");
+        res.status(data.status).send(data.error);
     }
 })
 
