@@ -1,18 +1,33 @@
-let all_modules = {
+import qpm from 'query-params-mongo';
+import createModel from './createModel.js';
+
+let getObjectId = function(val) {
+    return mongoose.Types.ObjectId(val);
+};
+
+var processQuery = qpm({
+    autoDetect: [
+        { fieldPattern: /_id$/, dataType: 'objectId' },
+        { fieldPattern: /orderNo$/, dataType: 'string' },
+    ],
+    converters: {objectId: getObjectId }
+});
+
+const all_modules = {
     twoBlogs: async function (req, res) {
-        let model = await myFuncs.createModel(`${req.params.brand}-blogs`);
+        let model = await createModel(`${req.params.brand}-blogs`);
         let blogs = await model.find({ visibility: "blog" }).limit(2);
         return blogs;
     },
 
     footerBlogs: async function (req, res) {
-        let model = await myFuncs.createModel(`${req.params.brand}-blogs`);
+        let model = await createModel(`${req.params.brand}-blogs`);
         let blogs = await model.find({ visibility: "blog" }).limit(3);
         return blogs;
     },
 
     threePages: async function (req, res) {
-        let model = await myFuncs.createModel(`${req.params.brand}-blogs`);
+        let model = await createModel(`${req.params.brand}-blogs`);
         return {
             education: await model.findOne({ slug: "education" }).lean(),
             helpAndSupport: await model.findOne({ slug: "help-and-support" }).lean(),
@@ -21,7 +36,7 @@ let all_modules = {
     },
 
     gallery: async function (req, res) {
-        let model = await myFuncs.createModel(`${req.params.brand}-gallery`);
+        let model = await createModel(`${req.params.brand}-gallery`);
         let output = await model.find().lean();
         output = output.map(val => {
             val.number = val.url.split("/image/upload/")[1].split("/dedicatedparents/")[0];
@@ -32,7 +47,7 @@ let all_modules = {
     },
 
     causes: async function (req, res) {
-        let model = await myFuncs.createModel(`${req.params.brand}-causes`);
+        let model = await createModel(`${req.params.brand}-causes`);
         let output = await model.find().lean();
         output = output.map(val => {
             val.number = val.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
@@ -43,10 +58,9 @@ let all_modules = {
     },
 
     pastThreeEvents: async function (req, res) {
-        console.log("starting past three events");
 
         req.query = processQuery(req.query);
-        let model = await myFuncs.createModel(`${req.params.brand}-events`);
+        let model = await createModel(`${req.params.brand}-events`);
         let output = await model.aggregate([
             [
                 {
@@ -75,7 +89,6 @@ let all_modules = {
                 }
             ]
         ]);
-        console.log("pastThreeEvents done");
         return output;
 
     },
@@ -83,7 +96,7 @@ let all_modules = {
     pastEvents: async function (req, res) {
 
         req.query = processQuery(req.query);
-        let model = await myFuncs.createModel(`${req.params.brand}-events`);
+        let model = await createModel(`${req.params.brand}-events`);
         let output = await model.aggregate([
             [
                 {
@@ -115,7 +128,7 @@ let all_modules = {
     futureEvents: async function (req, res) {
 
         req.query = processQuery(req.query);
-        let model = await myFuncs.createModel(`${req.params.brand}-events`);
+        let model = await createModel(`${req.params.brand}-events`);
         let output = await model.aggregate([
             [
                 {
@@ -147,12 +160,11 @@ let all_modules = {
     },
 
     staffs: async function (req, res) {
-        let model = await myFuncs.createModel(`${req.params.brand}-staffs`);
+        console.log("opening staffs");
+        let model = await createModel(`${req.params.brand}-staffs`);
         let output = await model.find().lean();
         return output;
     }
 };
 
-export default {
-    all_modules
-};
+export default all_modules;

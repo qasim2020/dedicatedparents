@@ -13,10 +13,10 @@
                 <!--<![endif]-->
                 <head>
                     <title>Dedicated Parents | Home</title>
-                    {{> dedicated_parents/header}}
+                    {{> header}}
                 </head>
                 <body>
-                    {{> dedicated_parents/headerNav active='home'}}
+                    {{> headerNav active='home'}}
                     <div class="container">
                         <div class="top-content">
                             <div class="row">
@@ -33,14 +33,14 @@
                                                 {{#each data.causes}}
                                                 <dt></dt>
                                                 <dd>
-                                                    <a href="/dedicated_parents/gen/page/d_pcause/{{this.slug}}">{{this.title}}</a> |
+                                                    <a href="/cause/{{this.slug}}">{{this.title}}</a> |
                                                     {{this.summary}}
                                                 </dd>
                                                 {{/each}}
                                                 {{#each data.events}}
                                                 <dt></dt>
                                                 <dd>
-                                                    <a href="/dedicated_parents/gen/page/d_pevent/{{this.slug}}">{{this.title}}</a> | 
+                                                    <a href="/event/{{this.slug}}">{{this.title}}</a> | 
                                                     {{this.summary}}
                                                 </dd>
                                                 {{/each}}
@@ -248,15 +248,15 @@
                             </div>
                             <!-- /.col-md-8 -->
                             <div class="col-md-4">
-                                {{> dedicated_parents/galleryPhotos}}
+                                {{> galleryPhotos}}
                                 <!-- /.box-content -->
-                                {{> dedicated_parents/upcomingEvents}}
+                                {{> upcomingEvents}}
                                 <!-- /.box-content -->
                             </div>
                             <!-- /.col-md-4 -->
                         </div>
                         <!-- /.row -->
                     </div>
-                    {{> dedicated_parents/footer}}
+                    {{> footer}}
                 </body>
             </html>
