@@ -58,163 +58,95 @@
 				</div> <!-- /.col-md-8 -->
 
 				<div class="col-md-4">
-                                    {{> galleryPhotos}}
-                                    {{> upcomingEvents}}
-
+                    {{> galleryPhotos}}
+                    {{> upcomingEvents}}
 				</div> <!-- /.col-md-4 -->
 
 			</div> <!-- /.row -->
 
 		</div> <!-- /.container -->
-                {{> footer}}
+        {{> footer}}
 
-		<!-- Google Map -->
-                <!-- <script src="http://maps.google.com/maps/api/js?sensor=true"></script> -->
-                <!-- <script src="/dedicated_parents/js/vendor/jquery.gmap3.min.js"></script> -->
-        <!-- Google Map Init-->
-        <script type="text/javascript">
-            // jQuery(function($){
-            //     $('.contact-map').gmap3({
-            //         marker:{
-            //             address: '16.8496189,96.1288854' 
-            //         },
-            //             map:{
-            //             options:{
-            //             zoom: 15,
-            //             scrollwheel: false,
-            //             streetViewControl : true
-            //             }
-            //         }
-            //     });
-            // });
-        </script>
+<script type="text/javascript">
 
-         <!-- Contact Form Validation -->
-   
-	    <script type="text/javascript">
-		    $(document).ready(function() {
-		        $("#submit_btn").click(function() { 
-		            
-		            //Get input field values
-		            var first_name       = $('input[name=name-id]').val(); 
-		            var last_name      = $('input[name=surname-id]').val();
-		            var user_email      = $('input[name=email-id]').val();
-		            var user_message    = $('textarea[name=message]').val();
-		            
-		            
-		            // Do simple validations of the values entered
-		            var proceed = true;
-		            if(first_name==""){ 
-		                $('input[name=name-id]').css('border-color','red'); 
-		                proceed = false;
-		            }
-		            if(last_name==""){ 
-		                $('input[name=surname-id]').css('border-color','red'); 
-		                proceed = false;
-		            }
-		            if(user_email==""){ 
-		                $('input[name=email-id]').css('border-color','red'); 
-		                proceed = false;
-		            }
-		            
-		            if(user_message=="") {  
-		                $('textarea[name=message]').css('border-color','red'); 
-		                proceed = false;
-		            }
+$(document).ready(function() {
+    $("#submit_btn").click(function() {
+        // Get input field values
+        const firstName = $('input[name=name-id]').val();
+        const lastName = $('input[name=surname-id]').val();
+        const userEmail = $('input[name=email-id]').val();
+        const userMessage = $('textarea[name=message]').val();
 
-                            let sendMsgToMail = function(msg) {
+        // Simple validations
+        let isValid = true;
+        const fields = [
+            { field: firstName, selector: 'input[name=name-id]' },
+            { field: lastName, selector: 'input[name=surname-id]' },
+            { field: userEmail, selector: 'input[name=email-id]' },
+            { field: userMessage, selector: 'textarea[name=message]' }
+        ];
 
-                                  let data = {
-                                      msgText: msg,
-                                      toEmail: "qasimali24@gmail.com", 
-                                      msgSubject: "dedicatedparents.org - new ticket created",
-                                      brand: "dedicated_parents"
-                                  }
+        fields.forEach(({ field, selector }) => {
+            if (!field) {
+                $(selector).css('border-color', 'red');
+                isValid = false;
+            }
+        });
 
-                                  data = JSON.stringify(data);
+        if (!isValid) return;
 
-                                  $.ajax({
-                                    url: "/sendMsgToEmail",
-                                    type: 'post',
-                                    data: data,
-                                    headers: {
-                                      "content-type": "application/json"
-                                    }
-                                  }).done(msg => {
-                                      $("#submit_btn").html("Message sent successfully!");
-                                  });
+        const sendEmail = (msg) => {
+            $.ajax({
+                url: "/sendMsgToEmail",
+                type: 'POST',
+                data: JSON.stringify({
+                    msgText: msg,
+                    toEmail: "qasimali24@gmail.com",
+                    msgSubject: "dedicatedparents.org - new ticket created",
+                    brand: "dedicated_parents"
+                }),
+                contentType: "application/json"
+            }).done(() => {
+                $("#submit_btn").html("Message sent successfully!");
+            }).fail( (err) => {
+                console.log(err);
+                $("#submit_btn").html("Message sending failed!");
+            });
+        };
 
-                            };
-
-                            let getBrowserLocation = function() {
-                                let browser_location = {};
-
-                                $.ajax({
-                                  url: 'https://json.geoiplookup.io/',
-                                  type: 'get'
-                                }).done(res => {
-                                  console.log(res);
-                                  browser_location = res;
-                                    // here write the message and send it over to server with send Mail
-                                          let msg = `
+        const getBrowserLocationAndSendEmail = () => {
+            $.get('https://json.geoiplookup.io/')
+                .done((res) => {
+                    const msg = `
 New message sent from dedicatedparents.org contact form. <br>
-firstName: ${first_name},  <br>
-lastName: ${last_name}, <br> 
-userEmail: ${user_email}, <br>
-userMessage: ${user_message} <br>
+First Name: ${firstName}, <br>
+Last Name: ${lastName}, <br>
+User Email: ${userEmail}, <br>
+User Message: ${userMessage} <br>
 Browser Location: <br>
-${JSON.stringify(browser_location)}
-      `;
+${JSON.stringify(res)}`;
+                    sendEmail(msg);
+                })
+                .fail((err) => {
+                    console.error(err);
+                    alert('Failed to get browser location.');
+                });
+        };
 
-                                    console.log(msg);
-                                    return sendMsgToMail(msg); 
-                                }).fail(e => {
-                                  console.log(e);
-                                  alert(e);
-                                })
-                            };
-		    
-                            $("#submit_btn").html("Sending...");
-		            // Check if we can proceed
-		            if(proceed) {
-		                // Data to be sent to server
-		                post_data = {
-                            'firstName':first_name, 
-                            'lastName':last_name, 
-                            'userEmail':user_email, 
-                            'userMessage':user_message
-                        };
+        $("#submit_btn").html("Sending...");
+        getBrowserLocationAndSendEmail();
+    });
 
-                        return getBrowserLocation();
-                        return console.log(post_data);
+    // Reset border colors and hide messages on keyup
+    $("#contact input, #contact textarea").keyup(function() {
+        $(this).css('border-color', '');
+        $("#result").slideUp();
+    });
+});
 
-		                // Ajax post data to server
-		                $.post('sendform.php', post_data, function(response){  
-		                    
-		                    // Load json data from server and output message     
-		                    if(response.type == 'error') {
-		                        output = '<div class="alert alert-danger">'+response.text+'</div>';
-		                    } else {
-		                        output = '<div class="alert alert-success">'+response.text+'</div>';
-		                        // Reset values in all input fields
-		                        $('#contact input').val(''); 
-		                        $('#contact textarea').val(''); 
-		                    }
-		                    
-		                    $("#result").hide().html(output).slideDown();
-		                }, 'json');
-		                
-		            }
-		        });
-		        
-		        // Reset previously set border colors and hide all message on .keyup()
-		        $("#contact input, #contact textarea").keyup(function() { 
-		            $("#contact input, #contact textarea").css('border-color',''); 
-		            $("#result").slideUp();
-		        });
-		        
-		    });
-		</script>
+
+
+</script>
 
     </body>
 </html>

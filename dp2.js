@@ -3,6 +3,10 @@ import hbs from 'hbs';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
 import { connect } from 'mongoose';
+import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
+import session from 'express-session';
+import bodyParser from 'body-parser';
 
 import config from './config000.json' assert { type: 'json' };
 
@@ -17,6 +21,7 @@ import blogPost from './modules/blogPost.js';
 import page from './modules/page.js';
 import causeSingle from './modules/causeSingle.js';
 import teamMember from './modules/teamMember.js';
+import sendMsgToEmail from './modules/sendMsgToEmail.js';
 
 // Create an Express application
 const app = express();
@@ -35,15 +40,41 @@ connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: tr
     .then(() => { console.log('MongoDB connected'); })
     .catch((err) => { console.error('MongoDB connection error:', err); });
 
+mongoose.connection.once('open', () => {
+    console.log('Connected to MongoDB');
+    
+    // Set up session middleware
+    app.use(
+        session({
+            secret: process.env.sessionSecret,
+            resave: false,
+            saveUninitialized: true,
+            cookie: {
+                maxAge: 20 * 60 * 1000, // 20 minutes
+            },
+            rolling: true,
+            store: MongoStore.create({
+                mongoUrl: process.env.MONGODB_URI
+            })
+        })
+    );
+    
+});
+
+app.use(express.static(join(__dirname, 'static')));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({
+    extended: true,
+    limit: '50mb',
+    parameterLimit: 1000000
+}));
+
 // Set up view engine
 app.set('view engine', 'hbs');
 app.set('views', join(__dirname, 'views'));
 
 // Register partials
 hbs.registerPartials(join(__dirname, 'views/partials'));
-
-// Serve static files
-app.use(express.static(join(__dirname, 'static')));
 
 hbs.registerHelper('toUpperCase', (str) => {
     return str.toUpperCase()
@@ -160,8 +191,16 @@ app.get('/page/:slug', async (req,res) => {
 });
 
 app.post('/sendMsgToEmail', async (req,res) => {
-    res.status(200).send("integrate Email message feature");
-})
+    try {
+        req.params.brand = "dedicated_parents";
+        const data = await sendMsgToEmail(req,res);
+        res.status(200).send(data);
+    } catch(e) {
+        console.log(e);
+        res.status(404).send('404 Not Found');
+    }
+});
+
 app.post('/postComment', async (req,res) => {
     res.status(200).send("integrate this feature");
 })
