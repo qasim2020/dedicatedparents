@@ -1,83 +1,77 @@
 import nodemailer from 'nodemailer';
+import fs from 'fs/promises'; 
+import hbs from 'hbs'; 
 import createModel from './createModel.js';
 
-const sendMsgToEmail = async function (req,res) {
-    if ( !( req.body.msgText && req.body.toEmail && req.body.msgSubject ) ) return {
-        status: 404, 
-        error: "Sorry you missed some fields."
-    };
+const sendMsgToEmail = async (req, res) => {
+    const { msgText, toEmail, msgSubject } = req.body;
+    const { brand } = req.params;
 
-    let mail  = await sendMail({ 
-        msg: req.body.msgText, 
-        toEmail: req.body.toEmail, 
-        subject: req.body.msgSubject, 
-        brand: req.params.brand
-    });
+    if (!msgText || !toEmail || !msgSubject) {
+        return {
+            status: 404,
+            error: "Required fields are missing."
+        };
+    }
 
-    return {
-        success: true
-    };
+    try {
+        await sendMail({ 
+            msg: msgText, 
+            toEmail, 
+            subject: msgSubject, 
+            brand 
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return { 
+            status: 500, 
+            error: "Failed to send email." 
+        };
+    }
 };
 
-const sendMail = async function({type, template, context, toEmail, subject, brand, msg}) { 
-    // min essential params are toEmail, subject, brand, msg
+const sendMail = async ({ type, template, context, toEmail, subject, brand, msg }) => {
+    const model = await createModel('myapp-themes');
+    const output = await model.findOne({ brand }).lean();
 
-    let model = await createModel(`myapp-themes`);
-    let output = await model.findOne({brand: brand}).lean();
-
-    let transporter = nodemailer.createTransport({
-      host: output.brandEmailServerLoc.trim(), 
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: output.brandEmail.trim(), 
-        pass: output.brandEmailPassword.trim(),
-      },
+    const transporter = nodemailer.createTransport({
+        host: output.brandEmailServerLoc.trim(),
+        port: 465,
+        secure: true,
+        auth: {
+            user: output.brandEmail.trim(),
+            pass: output.brandEmailPassword.trim(),
+        },
     });
 
-    let hbstemplate, html;
+    const html = await generateEmailContent({ type, template, context, msg });
+    
+    const mailOptions = {
+        from: output.brandEmail,
+        to: toEmail,
+        subject,
+        html,
+    };
 
-    if (context != undefined) {
+    return await transporter.sendMail(mailOptions);
+};
 
-        if (type == "database") {
-
-            // I need type, context, toEmail, subject, brand, and msg
-            hbstemplate = hbs.compile(msg);
-            html = hbstemplate({data: context});
-
+const generateEmailContent = async ({ type, template, context, msg }) => {
+    if (context) {
+        if (type === "database") {
+            const hbstemplate = hbs.compile(msg);
+            return hbstemplate({ data: context });
         } else {
-
-            let file = await new Promise( (resolve, reject) => {
-
-                fs.readFile(`./views/emails/${template}.hbs`, 'utf8', (err, data) => {
-                    if (err) reject(err)
-                    resolve(data);
-                });
-
-            });
-
-            hbstemplate = hbs.compile(file);
-            html = hbstemplate({data: context});
-
+            const file = await fs.readFile(`./views/emails/${template}.hbs`, 'utf8');
+            const hbstemplate = hbs.compile(file);
+            return hbstemplate({ data: context });
         }
-
-    } else {
-
-        html = msg; // this is now a simple MSG
-
     }
-
-    var mail = {
-       from: output.brandEmail,
-       to: toEmail,
-       subject: subject,
-       html: html
-    }
-
-    const info = await transporter.sendMail(mail);
-
-    return info;
-
+    
+    // Return plain message if no context is provided
+    return msg;
 };
 
 export default sendMsgToEmail;
