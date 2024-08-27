@@ -23,9 +23,7 @@
                                 <div class="col-md-12">
                                     <div class="u-cause-wrapper hidden-xs">
                                         <span class="u-cause-title">
-                                            <a href="#" class="close-u-cause">
-                                            <i class="fa fa-times"></i>
-                                            </a>
+                                            <a href="#" class="close-u-cause"> <i class="fa fa-times"></i> </a> 
                                             OUR UPDATES 
                                         </span>
                                         <div class="u-cause clearfix">
@@ -226,8 +224,8 @@
                                             {{/each}}
                                             </ul>
                                             <div class="testi-wrapper">
-                                            {{#each data.staffs}}
-                                            <div id="testi-content-0{{inc @index}}" class="testi-content {{#if (matchValues @index 0)}}active{{/if}}">
+                                                {{#each data.staffs}}
+                                                <div id="testi-content-0{{inc @index}}" class="testi-content {{#if (matchValues @index 0)}}active{{/if}}">
                                                     <div class="testi-author">
                                                         <h6>{{this.title}}<span>{{this.role}}</span></h6>
                                                     </div>
@@ -236,7 +234,7 @@
                                                     </p>
                                                     <a href="/team-member/{{this.slug}}">Read More...</a>
                                                 </div>
-                                            {{/each}}
+                                                {{/each}}
                                             </div>
                                             <!-- //.testi-wrapper -->
                                         </div>
@@ -249,13 +247,9 @@
                             <!-- /.col-md-8 -->
                             <div class="col-md-4">
                                 {{> galleryPhotos}}
-                                <!-- /.box-content -->
                                 {{> upcomingEvents}}
-                                <!-- /.box-content -->
                             </div>
-                            <!-- /.col-md-4 -->
                         </div>
-                        <!-- /.row -->
                     </div>
                     {{> footer}}
                 </body>

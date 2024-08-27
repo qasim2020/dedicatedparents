@@ -7,11 +7,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
     <head>
         <title>Dedicated Parents | Blogs</title>
-        {{> dedicated_parents/header}}
+        {{> header}}
     </head>
     <body>
 
-        {{> dedicated_parents/headerNav active='page'}}
+        {{> headerNav active='page'}}
 
 		<div class="container">
 			
@@ -21,7 +21,7 @@
 						<h2 class="page-title">Page List</h2>
 					</div> <!-- /.col-md-6 -->
 					<div class="col-md-6 col-sm-6 hidden-xs back-home">
-						<a href="/dedicated_parents/gen/page/landingPage/n">&larr; Go back Home</a>
+						<a href="/">&larr; Go back Home</a>
 					</div> <!-- /.col-md-6 -->
 				</div> <!-- /.row -->
 			</div> <!-- /.page-header -->
@@ -29,33 +29,26 @@
 			<div class="row">
 				
 				<div class="col-md-8">
-                                    {{#each data.blogs}}
+					{{#each data.blogs}}
 					<div class="blog-list">
 						<div class="post-thumb">
-                                                    <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_242,w_300/{{this.number}}/dedicatedparents/pages-photos/{{this.imgSlug}}" alt="">
+							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_242,w_300/{{this.number}}/dedicatedparents/pages-photos/{{this.imgSlug}}" alt="">
 						</div> <!-- /.blog-thumb -->
 						<div class="post-content">
-                                                    <h4 class="post-title"><a href="/dedicated_parents/gen/page/d_ppage/{{this.slug}}">{{this.title}}</a></h4>
-                                                    <p class="post-meta"><a href="#">{{this.date}}</a> with <a href="#">4 Comments</a></p>
-                                                    <p>{{this.subtitle}}</p>
-                                                    <a href="/dedicated_parents/gen/page/d_pblog/{{this.slug}}" class="read-more">Continue Reading &rarr;</a>
+							<h4 class="post-title"><a href="/dedicated_parents/gen/page/d_ppage/{{this.slug}}">{{this.title}}</a></h4>
+							<p class="post-meta"><a href="#">{{this.date}}</a> with <a href="#">4 Comments</a></p>
+							<p>{{this.subtitle}}</p>
+							<a href="/dedicated_parents/gen/page/d_pblog/{{this.slug}}" class="read-more">Continue Reading &rarr;</a>
 						</div> <!-- /.blog-content -->
 					</div> <!-- /.blog-list -->
-                                    {{/each}}
+					{{/each}}
 				</div> <!-- /.col-md-8 -->
-
 				<div class="col-md-4">
-                                        {{> dedicated_parents/galleryPhotos}}
-                                        {{> dedicated_parents/upcomingEvents}}
+					{{> galleryPhotos}}
+					{{> upcomingEvents}}
 				</div> <!-- /.col-md-4 -->
-
 			</div> <!-- /.row -->
-
 		</div> <!-- /.container -->
-
-		
-                {{> dedicated_parents/footer}}
-	
-
+		{{> footer}}
     </body>
 </html>
