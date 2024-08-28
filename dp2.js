@@ -31,36 +31,40 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-var envConfig = config['development'];
-Object.keys(envConfig).forEach((key) => {
-    process.env[key] = envConfig[key];
-});
 
-// Connect to MongoDB
-connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
-    .then(() => { console.log('MongoDB connected'); })
-    .catch((err) => { console.error('MongoDB connection error:', err); });
+if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test environment
 
-mongoose.connection.once('open', () => {
-    console.log('Connected to MongoDB');
-    
-    // Set up session middleware
-    app.use(
-        session({
-            secret: process.env.sessionSecret,
-            resave: false,
-            saveUninitialized: true,
-            cookie: {
-                maxAge: 20 * 60 * 1000, // 20 minutes
-            },
-            rolling: true,
-            store: MongoStore.create({
-                mongoUrl: process.env.MONGODB_URI
+    var envConfig = config['development'];
+    Object.keys(envConfig).forEach((key) => {
+        process.env[key] = envConfig[key];
+    });
+
+
+    // Connect to MongoDB
+    connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
+        .then(() => { console.log('MongoDB connected'); })
+        .catch((err) => { console.error('MongoDB connection error:', err); });
+
+    mongoose.connection.once('open', () => {
+        console.log('Connected to MongoDB');
+        // Set up session middleware
+        app.use(
+            session({
+                secret: process.env.sessionSecret,
+                resave: false,
+                saveUninitialized: true,
+                cookie: {
+                    maxAge: 20 * 60 * 1000, // 20 minutes
+                },
+                rolling: true,
+                store: MongoStore.create({
+                    mongoUrl: process.env.MONGODB_URI
+                })
             })
-        })
-    );
-    
-});
+        );
+        
+    });
+};
 
 app.use(express.static(join(__dirname, 'static')));
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -221,7 +225,11 @@ app.use((req, res) => {
 });
 
 // Start the server
-const PORT = 3002;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test environment
+    const PORT = 3002;
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+};
+
+export {app};

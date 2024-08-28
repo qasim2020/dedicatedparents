@@ -1,5 +1,5 @@
 import { sendMail } from './sendMsgToEmail.js';
-import createModel from './createModel';
+import createModel from './createModel.js';
 
 const subscribe = async function(req, res) {
     try {

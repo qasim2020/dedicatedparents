@@ -2,6 +2,17 @@ import nodemailer from 'nodemailer';
 import fs from 'fs/promises'; 
 import hbs from 'hbs'; 
 import createModel from './createModel.js';
+import { connect } from 'mongoose';
+import config from '../config000.json' assert { type: 'json' };
+
+var envConfig = config['test'];
+Object.keys(envConfig).forEach((key) => {
+    process.env[key] = envConfig[key];
+});
+
+await connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
+.then(() => { console.log('MongoDB connected'); })
+.catch((err) => { console.error('MongoDB connection error:', err); }); 
 
 const sendMsgToEmail = async (req, res) => {
     const { msgText, toEmail, msgSubject } = req.body;
