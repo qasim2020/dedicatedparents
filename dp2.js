@@ -213,13 +213,13 @@ app.post('/subscribe', async (req,res) => {
     }
 });
 
-app.get('/verifyEmail', async (req,res) {
+app.get('/verifyEmail', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await verifyEmail(req,res);
     res.render('verifyEmail', data);
 });
 
-app.get('/unsubscribeMe', async (req,res) {
+app.get('/unsubscribeMe', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await unsubscribeMe(req,res);
     res.render('unsubscribeMe', data);
