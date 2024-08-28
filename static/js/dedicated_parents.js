@@ -48,6 +48,7 @@ let myFuncs = {
             method: "POST", 
             success: val => $(e.target).html("Check your inbox!")
         }).fail( err => {
+            console.log(err);
             $(e.target).html("Error!");
             $(e.target).closest("fieldset").append(`<p class="error">${err.responseText}</p>`);
         });

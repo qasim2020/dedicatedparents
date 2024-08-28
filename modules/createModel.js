@@ -14,8 +14,10 @@ let createModel = async function(modelName) {
         return mongoose.models[modelName] || mongoose.model(modelName, new mongoose.Schema(schema.properties, { timestamps: { createdAt: 'created_at' } }));
     } catch(e) {
         console.log( chalk.red.bold( 'Failed to create Model' + ':' + modelName ) );
-        console.log(e);
-        return e;
+        return {
+            status: 500,
+            error: 'Failed to create Model' + ':' + modelName
+        };
     }
     
 };

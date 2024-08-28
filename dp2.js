@@ -46,8 +46,6 @@ if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test e
         .catch((err) => { console.error('MongoDB connection error:', err); });
 
     mongoose.connection.once('open', () => {
-        console.log('Connected to MongoDB');
-        // Set up session middleware
         app.use(
             session({
                 secret: process.env.sessionSecret,
@@ -207,13 +205,25 @@ app.post('/sendMsgToEmail', async (req,res) => {
 
 app.post('/subscribe', async (req,res) => {
     req.params.brand = "dedicated_parents";
-    const data = await subscribeEmail(req,res);
+    const data = await subscribe(req,res);
     if (data.success) {
         res.status(200).send("Successfully subscribed!");
     } else {
         res.status(data.status).send(data.error);
     }
-})
+});
+
+app.get('/verifyEmail', async (req,res) {
+    req.params.brand = "dedicated_parents";
+    const data = await verifyEmail(req,res);
+    res.render('verifyEmail', data);
+});
+
+app.get('/unsubscribeMe', async (req,res) {
+    req.params.brand = "dedicated_parents";
+    const data = await unsubscribeMe(req,res);
+    res.render('unsubscribeMe', data);
+});
 
 app.post('/postComment', async (req,res) => {
     res.status(200).send("integrate this feature");

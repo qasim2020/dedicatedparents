@@ -18,14 +18,13 @@ const subscribe = async function(req, res) {
 
         const subscriber = await addOrUpdateSubscriber(model, { firstName, lastName, email });
         const verifyUrl = generateVerificationUrl(brand, email, subscriber._id);
-        
-        const mailResponse = await sendVerificationEmail.call(this, brand, subscriber, verifyUrl);
+        const mailResponse = await sendVerificationEmail(brand, subscriber, verifyUrl);
 
-        await logMailEvent.call(this, brand, email, mailResponse);
-        
-        return { output: subscriber };
+        await logMailEvent(brand, email, mailResponse);
+        return { success: true, output: subscriber };
+
     } catch (error) {
-        console.error("Error in subscription process:", error);
+        console.log(error);
         return { 
             status: 500, 
             error: 'Failed to process subscription request.'
@@ -55,11 +54,11 @@ const addOrUpdateSubscriber = async (model, subscriberData) => {
 };
 
 const generateVerificationUrl = (brand, email, id) => {
-    return `${process.env.url}/${brand}/gen/page/verifyEmail/n?email=${email}&uniqueCode=${id}`;
+    return `${process.env.url}/verifyEmail/n?email=${email}&uniqueCode=${id}`;
 };
 
 const sendVerificationEmail = async function(brand, subscriber, verifyUrl) {
-    const mailModel = await this.createModel(`${brand}-newsletters`);
+    const mailModel = await createModel(`${brand}-newsletters`);
     const mailTemplate = await mailModel.findOne({ slug: "verify-email" }).lean();
 
     const emailOptions = mailTemplate ? {

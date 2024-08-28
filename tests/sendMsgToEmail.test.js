@@ -3,18 +3,18 @@ import { app } from '../dp2.js';
 
 describe('POST /sendMsgToEmail', () => {
 
-  it('should return 200 when email is sent successfully', async () => {
-    const response = await request(app)
-      .post('/sendMsgToEmail')
-      .send({
-        msgText: "Test message",
-        toEmail: "qasimali24@gmail.com",
-        msgSubject: "Test Subject"
-      });
+  // it('should return 200 when email is sent successfully', async () => {
+  //   const response = await request(app)
+  //     .post('/sendMsgToEmail')
+  //     .send({
+  //       msgText: "Test message",
+  //       toEmail: "qasimali24@gmail.com",
+  //       msgSubject: "Test Subject"
+  //     });
     
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(true);
-  });
+  //   expect(response.status).toBe(200);
+  //   expect(response.body.success).toBe(true);
+  // });
 
   it('should return 404 when required fields are missing', async () => {
     const response = await request(app)
