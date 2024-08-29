@@ -23,6 +23,7 @@ import causeSingle from './modules/causeSingle.js';
 import teamMember from './modules/teamMember.js';
 import { sendMsgToEmail } from './modules/sendMsgToEmail.js';
 import subscribe from './modules/subscribe.js';
+import eventSingle from './modules/eventSingle.js';
 
 // Create an Express application
 const app = express();
@@ -79,6 +80,40 @@ app.set('views', join(__dirname, 'views'));
 // Register partials
 hbs.registerPartials(join(__dirname, 'views/partials'));
 
+hbs.registerHelper('getDay', function(date) {
+    let input = new Date(date);
+
+    return input.getDate();
+});
+
+hbs.registerHelper('getMonth', function(date) {
+    let input = new Date(date);
+    let months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+    ];
+    return months[input.getMonth()];
+});
+
+hbs.registerHelper('getYear', function(date) {
+    let input = new Date(date);
+    return input.getFullYear();
+});
+
+hbs.registerHelper('reduceStringLength', function(string, length) {
+    return string.substring(0, length);
+});
+
 hbs.registerHelper('toUpperCase', (str) => {
     return str.toUpperCase()
 });
@@ -132,9 +167,9 @@ app.get('/events', async (req,res) => {
     res.render('events', data);
 });
 
-app.get('/event', async (req,res) => {
+app.get('/event/:slug', async (req,res) => {
     req.params.brand = "dedicated_parents";
-    const data = await event(req,res);
+    const data = await eventSingle(req,res);
     res.render('event', data);
 });
 

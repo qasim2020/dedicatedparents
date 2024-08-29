@@ -6,7 +6,7 @@
 <!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
     <head>
-        <title>{{this.output.title}}</title>
+        <title>{{event.current.title}}</title>
         {{> header}}
     </head>
     <body>
@@ -18,7 +18,7 @@
 			<div class="page-header">
 				<div class="row">
 					<div class="col-md-6 col-sm-6">
-                        <h2 class="page-title">{{this.output.title}}</h2>
+                        <h2 class="page-title">{{event.current.title}}</h2>
 					</div> <!-- /.col-md-6 -->
 					<div class="col-md-6 col-sm-6 hidden-xs back-home">
 						<a href="/">&larr; Go back Home</a>
@@ -31,16 +31,16 @@
 				<div class="col-md-8">
 					<div class="event-single">
 						<div class="event-image">
-                            <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_400,w_770/v1680079430/dedicatedparents/event-banners/{{data.output.bannerImg}}" alt="">
+                            <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_400,w_770/v1680079430/dedicatedparents/event-banners/{{event.current.bannerImg}}" alt="">
 							<div class="img-date">
-                                <span class="month">{{getMonth data.output.date}}</span>
-                                <span class="day">{{getDay data.output.date}}</span>
-                                <span class="year">{{getYear data.output.date}}</span>
+                                <span class="month">{{getMonth event.current.date}}</span>
+                                <span class="day">{{getDay event.current.date}}</span>
+                                <span class="year">{{getYear event.current.date}}</span>
 							</div> <!-- /.img-date -->
 						</div> <!-- /.event-image -->
 						<div class="event-content">
-                            <h3>{{data.output.title}}</h3>
-                            <p>{{data.output.detail}}</p>
+                            <h3>{{event.current.title}}</h3>
+                            <p>{{event.current.detail}}</p>
 							<div class="space-s"></div>
 							<div class="row">
 								<div class="col-md-6 col-sm-6">
@@ -48,13 +48,13 @@
 								</div> <!-- /.col-md-6 -->
 								<div class="col-md-6 col-sm-6">
 									<ul class="event-info">
-                                        <li><span>Date:</span>{{data.output.date}}</li>
-                                        <li><span>Time:</span>{{data.output.time}}</li>
-                                        <li><span>Event Type:</span>{{data.output.type}}</li>
-                                        <li><span>Contact:</span> {{data.output.phone}} </li>
+                                        <li><span>Date:</span>{{event.current.date}}</li>
+                                        <li><span>Time:</span>{{event.current.time}}</li>
+                                        <li><span>Event Type:</span>{{event.current.type}}</li>
+                                        <li><span>Contact:</span> {{event.current.phone}} </li>
                                         <li>
                                             <span></span>
-                                            <a href="mailto:{{data.output.email}}">{{data.output.email}}</a>
+                                            <a href="mailto:{{event.current.email}}">{{event.current.email}}</a>
                                         </li>
 									</ul>
 								</div> <!-- /.col-md-6 -->
@@ -62,6 +62,10 @@
 						</div> <!-- /.event-content -->
 					</div> <!-- /.event-single -->
 					<div class="row">
+						<div class="col-md-12">
+							<a href="/event/{{event.prev.slug}}" class="go-prev"><i class="fa fa-long-arrow-left"></i>Prev</a>
+							<a href="/event/{{event.next.slug}}" class="go-next">Next <i class="fa fa-long-arrow-right"></i></a>
+						</div> <!-- /.col-md-12 -->
 					</div> <!-- /.row -->
 				</div> <!-- /.col-md-8 -->
 

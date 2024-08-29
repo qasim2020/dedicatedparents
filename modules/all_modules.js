@@ -220,11 +220,6 @@ const all_modules = {
             prevDocument = await model.findOne({visibility: "blog"}).sort({ _id: -1 }).lean();
         };
 
-        console.log({
-            currentDocument,
-            nextDocument,
-            prevDocument
-        })
         // Return the current, next, and previous documents
         return {
             current: currentDocument,
@@ -243,7 +238,6 @@ const all_modules = {
             return res.status(404).json({ message: 'Document not found' });
         };
 
-        console.log(currentDocument.bannerImg);
         currentDocument.number = currentDocument.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
         currentDocument.imgSlug = currentDocument.bannerImg.split("/pages-photos/")[1];
 
@@ -345,6 +339,41 @@ const all_modules = {
             next: nextDocument,
             prev: prevDocument
         };
+
+    },
+
+    getEvent: async function(req,res) {
+        let model = await createModel(`${req.params.brand}-events`);
+
+        // Find the current document based on the slug
+        let currentDocument = await model.findOne({ slug: req.params.slug }).lean();
+
+        if (!currentDocument) {
+            return res.status(404).json({ message: 'Document not found' });
+        }
+
+        // Find the next document (using _id for simplicity, assuming it's auto-incremented or timestamped)
+        let nextDocument = await model.findOne({ _id: { $gt: currentDocument._id } }).sort({ _id: 1 }).lean();
+
+        // Find the previous document
+        let prevDocument = await model.findOne({ _id: { $lt: currentDocument._id } }).sort({ _id: -1 }).lean();
+
+        // If no next document is found, fetch the first document (wrap around)
+        if (!nextDocument) {
+            nextDocument = await model.findOne().sort({ _id: 1 }).lean();
+        }
+
+        // If no previous document is found, fetch the last document (wrap around)
+        if (!prevDocument) {
+            prevDocument = await model.findOne().sort({ _id: -1 }).lean();
+        }
+
+        // Return the current, next, and previous documents
+        return {
+            current: currentDocument,
+            next: nextDocument,
+            prev: prevDocument
+        }
 
     }
 };
