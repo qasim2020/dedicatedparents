@@ -259,12 +259,6 @@ app.get('/verifyEmail', async (req,res) => {
     res.render('verifyEmail', data);
 });
 
-app.get('/unsubscribe', async (req,res) => {
-    req.params.brand = "dedicated_parents";
-    const data = await unsubscribe(req,res);
-    res.render('unsubscribe', data);
-});
-
 app.post('/postComment', async (req,res) => {
     res.status(200).send("integrate this feature");
 })
