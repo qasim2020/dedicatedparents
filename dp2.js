@@ -23,7 +23,6 @@ import causeSingle from './modules/causeSingle.js';
 import teamMember from './modules/teamMember.js';
 import { sendMsgToEmail } from './modules/sendMsgToEmail.js';
 import subscribe from './modules/subscribe.js';
-import unsubscribe from './modules/unsubscribe.js';
 import eventSingle from './modules/eventSingle.js';
 import verifyEmail from './modules/verifyEmail.js';
 
