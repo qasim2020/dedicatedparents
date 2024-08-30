@@ -25,6 +25,7 @@ import { sendMsgToEmail } from './modules/sendMsgToEmail.js';
 import subscribe from './modules/subscribe.js';
 import eventSingle from './modules/eventSingle.js';
 import verifyEmail from './modules/verifyEmail.js';
+import postComment from './modules/postComment.js';
 
 
 // Create an Express application
@@ -254,12 +255,17 @@ app.post('/subscribe', async (req,res) => {
 app.get('/verifyEmail', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await verifyEmail(req,res);
-    console.log(data);
     res.render('verifyEmail', data);
 });
 
 app.post('/postComment', async (req,res) => {
-    res.status(200).send("integrate this feature");
+    req.params.brand = "dedicated_parents";
+    const data = await postComment(req,res);
+    if (data.success) {
+        res.status(200).send(data);
+    } else {
+        res.status(data.status).send(data.error);
+    }
 })
 
 // Error handling

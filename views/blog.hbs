@@ -57,40 +57,35 @@
 
 
 					<div class="comments box-content">
-                                            <h4 class="widget-title"><span>Comments <em>({{countComments}})</em></span></h4>
-                                                {{#each comments}}
-                                                <div class="comment post" data-id="{{this.comment._id}}">
-							<div class="author-thumb">
-								<img src="http://placehold.it/80x80" alt="">
-							</div> <!-- /.author-thumb -->
+                            <h4 class="widget-title"><span>Comments <em>({{countComments}})</em></span></h4>
+                            {{#each comments}}
+                            <div class="comment post" data-id="{{this.comment._id}}">
+                                <div class="author-thumb">
+                                    <img src="http://placehold.it/80x80" alt="">
+                                </div> <!-- /.author-thumb -->
 
-							<div class="comment-body">
-                                                            <h5 class="hyphon author">{{this.comment.name}}</h5>
-                                                            <span onclick="replyForm(this)" class="hyphon reply">Reply</span>
-                                                            <span onclick="replyForm(this)" class="hyphon user-action">Approve</span>
-                                                            <span onclick="replyForm(this)" class="user-action">Delete</span>
-                                                            <span class="time">{{getFormattedDateTimeMongoId this.comment._id}}</span>
-                                                            <p>{{this.comment.comment}}</p>
-							</div> <!-- /.comment-body -->
+                                <div class="comment-body">
+                                    <h5 class="hyphon author">{{this.comment.name}}</h5>
+                                    <span onclick="replyForm(this)" class="hyphon reply">Reply</span>
+                                    <span class="time">{{getFormattedDateTimeMongoId this.comment._id}}</span>
+                                    <p>{{this.comment.comment}}</p>
+                                </div> <!-- /.comment-body -->
+                                {{#each this.replies}}
+                                <div class="comment">
+                                    <div class="author-thumb">
+                                        <img src="http://placehold.it/80x80" alt="">
+                                    </div> <!-- /.author-thumb -->
 
-                                                    {{#each this.replies}}
-                                                    <div class="comment">
-                                                            <div class="author-thumb">
-                                                                    <img src="http://placehold.it/80x80" alt="">
-                                                            </div> <!-- /.author-thumb -->
-
-                                                            <div class="comment-body">
-                                                                <h5 class="hyphon author">{{this.name}}</h5>
-                                                                <span onclick="replyForm(this)" class="hyphon reply">Reply</span>
-                                                                <span onclick="replyForm(this)" class="hyphon user-action reply">Approve</span>
-                                                                <span onclick="replyForm(this)" class="user-action reply">Delete</span>
-                                                                <span class="time">{{getFormattedDateTimeMongoId this._id}}</span>
-                                                                <p>{{this.comment}}</p>
-                                                            </div> <!-- /.comment-body -->
-                                                    </div>
-                                                    {{/each}}
-						</div> <!-- /.comment -->
-                                                {{/each}}
+                                    <div class="comment-body">
+                                        <h5 class="hyphon author">{{this.name}}</h5>
+                                        <span onclick="replyForm(this)" class="hyphon reply">Reply</span>
+                                        <span class="time">{{getFormattedDateTimeMongoId this._id}}</span>
+                                        <p>{{this.comment}}</p>
+                                    </div> <!-- /.comment-body -->
+                                </div>
+                                {{/each}}
+                            </div> <!-- /.comment -->
+                            {{/each}}
 					</div> <!-- /.comments -->
 
 					<div class="reply-form comment-form box-content d-none">
@@ -152,151 +147,103 @@
 
 		
                 {{> footer}}
+
 <script>
 
-    let replyForm = function(elem) {
+        let replyForm = function(elem) {
 
-        console.log($(elem).closest(".comment.post").find(".reply-form").get());
-        console.log($(elem).closest(".comment.post").find(".reply-form"));
+            $(".comment.post").find(".reply").html("Reply");
 
-        $(".comment.post").find(".reply").html("Reply");
+            if ( $(elem).closest(".comment.post").find(".reply-form:not(.d-none)").get().length > 0 ) {
+                $(".reply-form").addClass("d-none");
+            } else {
+                $(".reply-form").appendTo( $(elem).closest(".comment.post") );
+                $(elem).closest(".comment.post").css({"scroll-margin": "30px"});
+                elem.closest(".comment.post").scrollIntoView();
+                $(".reply-form").removeClass("d-none");
+                $(elem).html("Cancel");
+            };
 
-        if ( $(elem).closest(".comment.post").find(".reply-form:not(.d-none)").get().length > 0 ) {
-            $(".reply-form").addClass("d-none");
-        } else {
-            $(".reply-form").appendTo( $(elem).closest(".comment.post") );
-            $(elem).closest(".comment.post").css({"scroll-margin": "30px"});
-            elem.closest(".comment.post").scrollIntoView();
-            $(".reply-form").removeClass("d-none");
-            $(elem).html("Cancel");
         };
 
-    };
+        let replyComment = function(elem) {
+            
+            $(elem).closest(".comment-form").find(".success, .error").addClass("d-none");
+            
+            let form = {
+                name: $(elem).closest(".comment-form").find("[name=name]").val(),
+                email: $(elem).closest(".comment-form").find("[name=email]").val(),
+                comment: $(elem).closest(".comment-form").find("[name=comment]").val(),
+                replyTo: $(elem).closest(".comment.post").attr("data-id"),
+                slug: "{{blog.current.slug}}",
+                page: "blog"
+            };
 
-    let getFormattedDateTimeMongoId = function(objectId) {
-        let date = new Date(parseInt(objectId.toString().substring(0, 8), 16) * 1000);
-        let dtg = date.toString().split(" ");
-        let obj = {
-            time: dtg[4],
-            date: dtg[2],
-            month: dtg[1],
-            yr: dtg[3]
-        }
-        let time = obj.time.split(":");
-        obj.time = time[0]+time[1]+ " hrs";
-        return `${obj.time} · ${obj.date} ${obj.month} ${obj.yr.slice(2,4)}`;
-    };
-
-    let getCommentHtml = function(val) {
-
-        return `
-            <div class="comment" data-id="${val.success._id}">
-                    <div class="author-thumb">
-                            <img src="http://placehold.it/80x80" alt="">
-                    </div> 
-
-                    <div class="comment-body">
-                        <h5 class="hyphon author">${val.success.name}</h5>
-                        <span onclick="replyForm(this)" class="hyphon reply">Reply</span>
-                        <span onclick="replyForm(this)" class="user-action">Delete</span>
-                        <span class="time">${getFormattedDateTimeMongoId(val.success._id)}</span>
-                        <p>${val.success.comment}</p>
-                    </div>
-
-            </div>
-        `;
-
-    };
-
-
-    let replyComment = function(elem) {
-        
-        $(elem).closest(".comment-form").find(".success, .error").addClass("d-none");
-        
-        let form = {
-            name: $(elem).closest(".comment-form").find("[name=name]").val(),
-            email: $(elem).closest(".comment-form").find("[name=email]").val(),
-            comment: $(elem).closest(".comment-form").find("[name=comment]").val(),
-            replyTo: $(elem).closest(".comment.post").attr("data-id"),
-            slug: "{{blog.current.slug}}",
-            page: "blog"
-        };
-
-        console.log(form);
-
-        if ( !(form.name && form.email && form.comment) ) {
-            $(elem).html("Post Comment");
-            console.log("error");
-            console.log(form);
-            return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html("Please fill all the fields above.");
-        };
-
-        $(elem).html("Posting...");
-
-        $.ajax({
-            url: "/postComment",
-            method: "POST",
-            data: form,
-            success: val => {
-                console.log(val);
+            if ( !(form.name && form.email && form.comment) ) {
                 $(elem).html("Post Comment");
-                $(elem).closest(".comment-form").find(".success").removeClass("d-none").html("Comment posted successfully!");
-                let html = getCommentHtml(val);
-                $(html).insertBefore( $(elem).closest(".comment-form") );
-                $(elem).closest(".comment-form").find("input, textarea").each( (k, v) => $(v).val("") );
-            },
-        }).fail( err => {
-            console.log(err);
-            $(elem).html("Post Comment");
-            return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html(err.responseText);
-        });
-    };
+                console.log("error");
+                console.log(form);
+                return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html("Please fill all the fields above.");
+            };
 
-    let postComment = function(elem) {
+            $(elem).html("Posting...");
 
-        $(elem).closest(".comment-form").find(".success, .error").addClass("d-none");
-        
-        let form = {
-            name: $(elem).closest(".comment-form").find("[name=name]").val(),
-            email: $(elem).closest(".comment-form").find("[name=email]").val(),
-            comment: $(elem).closest(".comment-form").find("[name=comment]").val(),
-            replyTo: "none", 
-            slug: "{{blog.current.slug}}",
-            page: "blog"
-        };
-
-
-        console.log(form);
-
-        if ( !(form.name && form.email && form.comment) ) {
-            $(elem).html("Post Comment");
-            console.log("error");
-            console.log(form);
-            return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html("Please fill all the fields above.");
-        };
-
-        $(elem).html("Posting...");
-
-        $.ajax({
-            url: "/postComment",
-            method: "POST",
-            data: form,
-            success: val => {
-                console.log(val);
+            $.ajax({
+                url: "/postComment",
+                method: "POST",
+                data: form,
+                success: val => {
+                    console.log(val);
+                    $(elem).html("Post Comment");
+                    $(elem).closest(".comment-form").find(".success").removeClass("d-none").html("Your comment has been posted to admins for validation!");
+                },
+            }).fail( err => {
+                console.log(err);
                 $(elem).html("Post Comment");
-                $(elem).closest(".comment-form").find(".success").removeClass("d-none").html("Comment posted successfully!");
-                let html = getCommentHtml(val);
-                $(html).appendTo( $(".comments") );
-                $(elem).closest(".comment-form").find("input, textarea").each( (k, v) => $(v).val("") );
-            },
-        }).fail( err => {
-            console.log(err);
-            $(elem).html("Post Comment");
-            return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html(err.responseText);
-        });
+                return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html(err.responseText);
+            });
+        };
 
-    };
-</script>
+        let postComment = function(elem) {
+
+            $(elem).closest(".comment-form").find(".success, .error").addClass("d-none");
+            
+            let form = {
+                name: $(elem).closest(".comment-form").find("[name=name]").val(),
+                email: $(elem).closest(".comment-form").find("[name=email]").val(),
+                comment: $(elem).closest(".comment-form").find("[name=comment]").val(),
+                replyTo: "none", 
+                slug: "{{blog.current.slug}}",
+                page: "blog"
+            };
+
+            if ( !(form.name && form.email && form.comment) ) {
+                $(elem).html("Post Comment");
+                console.log("error");
+                console.log(form);
+                return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html("Please fill all the fields above.");
+            };
+
+            $(elem).html("Posting...");
+
+            $.ajax({
+                url: "/postComment",
+                method: "POST",
+                data: form,
+                success: val => {
+                    console.log(val);
+                    $(elem).html("Post Comment");
+                    $(elem).closest(".comment-form").find(".success").removeClass("d-none").html("Your comment has been posted to admins for validation!");
+                },
+            }).fail( err => {
+                console.log(err);
+                $(elem).html("Post Comment");
+                return $(elem).closest(".comment-form").find(".error").removeClass("d-none").html(err.responseText);
+            });
+
+        };
+    </script>
+
 
     </body>
 </html>
