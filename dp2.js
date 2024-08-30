@@ -23,7 +23,10 @@ import causeSingle from './modules/causeSingle.js';
 import teamMember from './modules/teamMember.js';
 import { sendMsgToEmail } from './modules/sendMsgToEmail.js';
 import subscribe from './modules/subscribe.js';
+import unsubscribe from './modules/unsubscribe.js';
 import eventSingle from './modules/eventSingle.js';
+import verifyEmail from './modules/verifyEmail.js';
+
 
 // Create an Express application
 const app = express();
@@ -86,6 +89,7 @@ hbs.registerHelper('getDay', function(date) {
     return input.getDate();
 });
 
+// Helpers
 hbs.registerHelper('getMonth', function(date) {
     let input = new Date(date);
     let months = [
@@ -251,13 +255,14 @@ app.post('/subscribe', async (req,res) => {
 app.get('/verifyEmail', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await verifyEmail(req,res);
+    console.log(data);
     res.render('verifyEmail', data);
 });
 
-app.get('/unsubscribeMe', async (req,res) => {
+app.get('/unsubscribe', async (req,res) => {
     req.params.brand = "dedicated_parents";
-    const data = await unsubscribeMe(req,res);
-    res.render('unsubscribeMe', data);
+    const data = await unsubscribe(req,res);
+    res.render('unsubscribe', data);
 });
 
 app.post('/postComment', async (req,res) => {

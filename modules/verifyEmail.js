@@ -1,4 +1,5 @@
 import createModel from './createModel.js';
+import sendEmailWithTemplate from './sendEmailWithTemplate.js';
 
 const verifyEmail = async function(req,res) {
 
@@ -14,7 +15,7 @@ const verifyEmail = async function(req,res) {
     });
 
     if (output != null) {
-        this.sendEmailWithTemplate(req.params.brand, 'welcome-email', output);
+        // sendEmailWithTemplate(req.params.brand, 'welcome-email', output);
         return {
             brand: req.params.brand,
             msg: 'Email Verified. Thank you for subscribing.'

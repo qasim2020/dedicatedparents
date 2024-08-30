@@ -101,4 +101,3 @@ const logMailEvent = async function(brand, email, mailResponse) {
 };
 
 export default subscribe;
-

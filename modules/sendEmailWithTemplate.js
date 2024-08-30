@@ -1,5 +1,6 @@
 import createModel from './createModel.js';
 import convertStringToArticle from './convertStringToArticle.js';
+import { sendMail } from './sendMsgToEmail.js';
 
 const sendEmailWithTemplate = async function(brand, templateSlug, subscriber) {
 
@@ -8,12 +9,12 @@ const sendEmailWithTemplate = async function(brand, templateSlug, subscriber) {
 
     if (output == null) return console.log( chalk.bold.red( 'COULD NOT SEND MAIL BECAUSE SLUG WAS NOT FOUND' ) );
 
-    await this.sendMail(
+    await sendMail(
         {
             from: `Dedicated Parents<${process.env.zoho}>`,
             template: output.subject,
             context: {
-                body: convertStringToArticle(output.body),
+                body: output.body, 
                 Id: subscriber._id,
                 email: subscriber.email ,
                 url: process.env.url, 
