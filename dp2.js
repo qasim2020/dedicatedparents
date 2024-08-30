@@ -26,6 +26,7 @@ import subscribe from './modules/subscribe.js';
 import eventSingle from './modules/eventSingle.js';
 import verifyEmail from './modules/verifyEmail.js';
 import postComment from './modules/postComment.js';
+import createTicket from './modules/createTicket.js';
 
 
 // Create an Express application
@@ -266,7 +267,17 @@ app.post('/postComment', async (req,res) => {
     } else {
         res.status(data.status).send(data.error);
     }
-})
+});
+
+app.post('/createTicket', async (req,res) => {
+    req.params.brand = "dedicated_parents";
+    const data = await createTicket(req,res);
+    if (data.success) {
+        res.status(200).send(data);
+    } else {
+        res.status(data.status).send(data.error);
+    }
+});
 
 // Error handling
 app.use((req, res) => {
