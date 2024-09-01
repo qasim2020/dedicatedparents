@@ -22,7 +22,7 @@ const all_modules = {
 
     footerBlogs: async function (req, res) {
         let model = await createModel(`${req.params.brand}-blogs`);
-        let blogs = await model.find({ visibility: "blog" }).limit(3);
+        let blogs = await model.find({ visibility: "page" }).limit(5);
         return blogs;
     },
 

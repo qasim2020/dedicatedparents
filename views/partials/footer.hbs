@@ -44,10 +44,10 @@
                 </div>
                 <!-- /.col-md-3 -->
                 <div class="col-md-3 col-sm-6 footer-widget">
-                    <h4 class="footer-widget-title color-white">Popular Posts</h4>
+                    <h4 class="footer-widget-title color-white">Insights</h4>
                     <ul>
-                        {{#each data.footerBlogs}}
-                        <li><a href="/blog/{{this.slug}}">{{this.title}}</a></li>
+                        {{#each footerBlogs}}
+                        <li><a href="/page/{{this.slug}}">{{this.title}}</a></li>
                         {{/each}}
                     </ul>
                 </div>
