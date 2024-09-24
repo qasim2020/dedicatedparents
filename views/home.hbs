@@ -35,6 +35,13 @@
                                                     {{this.summary}}
                                                 </dd>
                                                 {{/each}}
+                                                {{#each futureThreeEvents}}
+                                                <dt></dt>
+                                                <dd>
+                                                    <a href="/event/{{this.slug}}">{{this.title}}</a> | 
+                                                    {{this.summary}}
+                                                </dd>
+                                                {{/each}}
                                                 {{#each events}}
                                                 <dt></dt>
                                                 <dd>
@@ -57,9 +64,20 @@
                                     <div class="col-md-8">
                                         <div class="flexslider">
                                             <ul class="slides">
+                                                {{#each futureThreeEvents}}
+                                                <li>
+                                                    <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_826,w_1155/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
+                                                    <div class="flex-caption">
+                                                        <p>
+                                                            {{this.summary}}
+                                                            <a href="/event/{{this.slug}}">Read More</a>
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                                {{/each}}
                                                 {{#each events}}
                                                 <li>
-                                                    <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_550,w_770/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
+                                                    <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_826,w_1155/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
                                                     <div class="flex-caption">
                                                         <p>
                                                             {{this.summary}}

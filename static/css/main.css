@@ -1,5 +1,5 @@
-@import url(http://fonts.googleapis.com/css?family=Raleway:400,300,500,600,700,800,900);
-@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,700,300,100);
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,300,500,600,700,800,900);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,700,300,100);
 /*------------------------------------------------------------------
 [ Master Stylesheet ]
 
@@ -884,14 +884,9 @@ a.flex-prev {
 }
 
 .flex-caption {
-  position: absolute;
-  wdith: 100%;
   min-width: 100%;
   padding: 2px 20px;
-  bottom: 0;
-  left: 0;
   background-color: rgba(0, 0, 0, 0.8);
-  display: block;
 }
 .flex-caption p {
   font-size: 14px;
@@ -901,8 +896,9 @@ a.flex-prev {
   color: #faca3a;
 }
 @media (max-width: 768px) {
-  .flex-caption {
-    display: none;
+  a.flex-prev,
+  a.flex-next {
+    bottom: 27%;
   }
 }
 

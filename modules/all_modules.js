@@ -93,6 +93,42 @@ const all_modules = {
 
     },
 
+    futureThreeEvents: async function (req, res) {
+    
+        req.query = processQuery(req.query);
+        let model = await createModel(`${req.params.brand}-events`);
+        let output = await model.aggregate([
+            [
+                {
+                    $addFields: {
+                        newDate: {
+                            $dateFromString: {
+                                dateString: "$date",
+                            }
+                        }
+                    },
+                },
+                {
+                    $match: {
+                        newDate: {
+                            $gt: new Date() 
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        newDate: 1 
+                    }
+                },
+                {
+                    $limit: 3 
+                }
+            ]
+        ]);
+        return output;
+    
+    },    
+
     pastEvents: async function (req, res) {
         req.query = processQuery(req.query);
         let model = await createModel(`${req.params.brand}-events`);
