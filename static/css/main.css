@@ -1173,6 +1173,7 @@ a.flex-prev {
 .cause-single .cause-image {
   position: relative;
   overflow: hidden;
+  background: white;
 }
 .cause-single .cause-image img {
   width: 100%;
@@ -1612,6 +1613,7 @@ a.flex-prev {
 .blog-single .post-image {
   position: relative;
   overflow: hidden;
+  background: white;
 }
 .blog-single .post-image img {
   width: 100%;
