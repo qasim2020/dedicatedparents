@@ -43,17 +43,18 @@
                             <p>{{event.current.detail}}</p>
 							<div class="space-s"></div>
 							<div class="row">
-								<div class="col-md-6 col-sm-6">
+								{{!-- <div class="col-md-6 col-sm-6">
 									<div class="event-map" style="height: 260px;"></div> <!-- /.event-map -->
-								</div> <!-- /.col-md-6 -->
-								<div class="col-md-6 col-sm-6">
+								</div> <!-- /.col-md-6 --> --}}
+								<div class="col-md-12 col-sm-6">
 									<ul class="event-info">
                                         <li><span>Date:</span>{{event.current.date}}</li>
                                         <li><span>Time:</span>{{event.current.time}}</li>
                                         <li><span>Event Type:</span>{{event.current.type}}</li>
+                                        <li><span>Location:</span>{{event.current.location}}</li>
                                         <li><span>Contact:</span> {{event.current.phone}} </li>
                                         <li>
-                                            <span></span>
+                                            <span>Email:</span>
                                             <a href="mailto:{{event.current.email}}">{{event.current.email}}</a>
                                         </li>
 									</ul>
