@@ -12,18 +12,38 @@
     <body>
         {{> headerNav active='events'}}
 		<div class="container">
-			<div class="page-header">
-				<div class="row">
-					<div class="col-md-6 col-sm-6">
-						<h2 class="page-title">Our recent events</h2>
-					</div> <!-- /.col-md-6 -->
-					<div class="col-md-6 col-sm-6 hidden-xs back-home">
-						<a href="/">&larr; Go back Home</a>
-					</div> <!-- /.col-md-6 -->
-				</div> <!-- /.row -->
-			</div> <!-- /.page-header -->
 			<div class="row">
 				<div class="col-md-8">
+					<div class="page-header no-border">
+						<h2 class="page-title">Our Upcoming Events</h2>
+					</div>
+					{{#if futureEvents}}
+					{{#each futureEvents}}
+					<div class="event-list">
+						<div class="event-thumb">
+							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_192,w_240/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
+						</div> <!-- /.event-thumb -->
+						<div class="event-content">
+							<h4 class="event-title">
+								<a href="/event/{{this.slug}}">{{this.title}} </a>
+							</h4>
+							<p>{{this.summary}}</p>
+							<div class="event-location">
+								<span><i class="fa fa-map-marker"></i>{{this.location}}</span>
+							</div>
+							<div class="event-time">
+								<span><i class="fa fa-calendar"></i>{{this.date}}</span>
+							</div>
+							<div class="clearfix"></div>
+						</div> <!-- /.event-content -->
+					</div> <!-- /.event-list -->
+					{{/each}}
+					{{else}}
+					<h2 class="no-events-planned">No events planned yet.</h2>
+					{{/if}}
+					<div class="page-header no-border">
+						<h2 class="page-title">Our Past Events</h2>
+					</div>
 					{{#each pastEvents}}
 					<div class="event-list">
 						<div class="event-thumb">
