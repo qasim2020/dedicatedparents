@@ -91,6 +91,10 @@ hbs.registerHelper('getDay', function(date) {
 });
 
 // Helpers
+hbs.registerHelper('concat', function() {
+    return Array.prototype.slice.call(arguments, 0, -1).join('');
+});
+
 hbs.registerHelper('getMonth', function(date) {
     let input = new Date(date);
     let months = [

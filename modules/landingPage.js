@@ -11,7 +11,10 @@ const landingPage = async function(req, res) {
         gallery: await all_modules.gallery(req,res), 
         threePages: await all_modules.threePages(req,res),
         footerBlogs: await all_modules.footerBlogs(req, res),
-        twoBlogs: await all_modules.twoBlogs(req,res)
+        twoBlogs: await all_modules.twoBlogs(req,res),
+        meta: {
+            img: "https://res.cloudinary.com/miscellaneous/image/upload/v1728680792/dedicatedparents/meta-image.png"
+        }
     };
     return output;
 }; 
