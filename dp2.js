@@ -163,6 +163,11 @@ hbs.registerHelper('matchValues', (val1,val2) => {
     }
 });
 
+hbs.registerHelper('cloudinaryTransformation', (url, height, width) => {
+    const transformation = `w_${width},h_${height},c_lpad`;
+    return url.replace('/upload/', `/upload/${transformation}/`);
+})
+
 // Route handling
 app.get('/', async (req, res) => {
     req.params.brand = "dedicated_parents";

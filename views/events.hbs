@@ -21,7 +21,7 @@
 					{{#each futureEvents}}
 					<div class="event-list">
 						<div class="event-thumb">
-							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_192,w_240/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
+                            <img src="{{cloudinaryTransformation  this.bannerImg 192 240}}" alt="">
 						</div> <!-- /.event-thumb -->
 						<div class="event-content">
 							<h4 class="event-title">
@@ -47,7 +47,7 @@
 					{{#each pastEvents}}
 					<div class="event-list">
 						<div class="event-thumb">
-							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_192,w_240/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
+                            <img src="{{cloudinaryTransformation  this.bannerImg 192 240}}" alt="">
 						</div> <!-- /.event-thumb -->
 						<div class="event-content">
 							<h4 class="event-title">

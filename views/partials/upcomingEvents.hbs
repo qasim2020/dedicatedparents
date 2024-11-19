@@ -5,7 +5,7 @@
                     {{#each futureEvents}}
                         <li class="event-item">
                                 <div class="event-thumb">
-                                    <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_80,w_80/v1680079430/dedicatedparents/event-banners/{{this.bannerImg}}" alt="">
+                                    <img src="{{cloudinaryTransformation this.bannerImg 80 80}}" alt="">
                                 </div>
                                 <div class="event-content">
                                     <h5 class="event-title"><a href="/event/{{this.slug}}">{{this.title}}</a></h5>

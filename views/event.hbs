@@ -7,7 +7,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
     <head>
         <title>{{event.current.title}}</title>
-        {{> header img=(concat "https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_630,w_1200/v1680079430/dedicatedparents/event-banners/" event.current.bannerImg)}}
+        {{> header img=(cloudinaryTransformation event.current.bannerImg 630 1200)}}
     </head>
     <body>
 
@@ -31,7 +31,7 @@
 				<div class="col-md-8">
 					<div class="event-single">
 						<div class="event-image">
-                            <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_826,w_1155/v1680079430/dedicatedparents/event-banners/{{event.current.bannerImg}}" alt="">
+                            <img src="{{cloudinaryTransformation  event.current.bannerImg 826 1155}}" alt="">
 							<div class="img-date">
                                 <span class="month">{{getMonth event.current.date}}</span>
                                 <span class="day">{{getDay event.current.date}}</span>
