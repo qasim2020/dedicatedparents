@@ -28,6 +28,7 @@ import verifyEmail from './modules/verifyEmail.js';
 import postComment from './modules/postComment.js';
 import createTicket from './modules/createTicket.js';
 
+import { sendErrorToTelegram } from './modules/bot.js';
 
 // Create an Express application
 const app = express();
@@ -169,6 +170,43 @@ hbs.registerHelper('cloudinaryTransformation', (url, height, width) => {
 })
 
 // Route handling
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const timestamp = new Date().toISOString();
+    const country = req.headers['cf-ipcountry'] || 'Unknown';
+    console.log(`${timestamp} | ${ip} | ${country} | ${req.originalUrl} `);
+    let oldSend = res.send;
+    let oldJson = res.json;
+
+    let responseBody;
+
+    res.send = function (data) {
+        responseBody = data;
+        return oldSend.apply(res, arguments);
+    };
+
+    res.json = function (data) {
+        responseBody = data;
+        return oldJson.apply(res, arguments);
+    };
+
+    const forbiddenErrors = ['/overlay/fonts/Karla-regular.woff', '/robots.txt'];
+
+    res.on('finish', () => {
+        if (res.statusCode > 399 && !forbiddenErrors.includes(req.originalUrl)) {
+            const errorData = {
+                message: responseBody,
+                status: res.statusCode,
+                url: req.originalUrl,
+            };
+            sendErrorToTelegram(errorData);
+        }
+    });
+
+    next();
+});
+
 app.get('/', async (req, res) => {
     req.params.brand = "dedicated_parents";
     const data = await landingPage(req, res);
@@ -196,7 +234,6 @@ app.get('/team', async (req,res) => {
 app.get('/team-member/:slug', async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await teamMember(req,res);
-    console.log(data);
     res.render('team-member', data);
 });
 
@@ -288,13 +325,11 @@ app.post('/createTicket', async (req,res) => {
     }
 });
 
-// Error handling
 app.use((req, res) => {
     res.status(404).send('404 Not Found');
 });
 
-// Start the server
-if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test environment
+if (process.env.NODE_ENV !== 'test') { 
     const PORT = 3002;
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
