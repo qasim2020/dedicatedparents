@@ -28,7 +28,7 @@ import verifyEmail from './modules/verifyEmail.js';
 import postComment from './modules/postComment.js';
 import createTicket from './modules/createTicket.js';
 
-import { sendErrorToTelegram } from './modules/bot.js';
+import sendErrorToTelegram from './modules/bot.js';
 
 // Create an Express application
 const app = express();
