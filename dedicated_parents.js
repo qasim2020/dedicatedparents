@@ -30,15 +30,13 @@ import createTicket from './modules/createTicket.js';
 
 import sendErrorToTelegram from './modules/bot.js';
 
-// Create an Express application
 const app = express();
 
-// Get the __filename and __dirname blogsequivalent
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 
-if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test environment
+if (process.env.NODE_ENV !== 'test') { 
 
     var envConfig = config['development'];
     Object.keys(envConfig).forEach((key) => {
@@ -46,7 +44,6 @@ if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test e
     });
 
 
-    // Connect to MongoDB
     connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
         .then(() => { console.log('MongoDB connected'); })
         .catch((err) => { console.error('MongoDB connection error:', err); });
@@ -58,7 +55,7 @@ if (process.env.NODE_ENV !== 'test') { // Only start the server if not in test e
                 resave: false,
                 saveUninitialized: true,
                 cookie: {
-                    maxAge: 20 * 60 * 1000, // 20 minutes
+                    maxAge: 20 * 60 * 1000, 
                 },
                 rolling: true,
                 store: MongoStore.create({
@@ -78,11 +75,9 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 1000000
 }));
 
-// Set up view engine
 app.set('view engine', 'hbs');
 app.set('views', join(__dirname, 'views'));
 
-// Register partials
 hbs.registerPartials(join(__dirname, 'views/partials'));
 
 hbs.registerHelper('getDay', function(date) {
@@ -91,7 +86,6 @@ hbs.registerHelper('getDay', function(date) {
     return input.getDate();
 });
 
-// Helpers
 hbs.registerHelper('concat', function() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
 });
@@ -169,7 +163,6 @@ hbs.registerHelper('cloudinaryTransformation', (url, height, width) => {
     return url.replace('/upload/', `/upload/${transformation}/`);
 })
 
-// Route handling
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
