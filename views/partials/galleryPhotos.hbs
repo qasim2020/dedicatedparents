@@ -3,8 +3,8 @@
         <div class="gallery-wrapper">
             {{#each gallery}}
             <div class="gallery-thumb">
-                <a href="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_550,w_770/{{this.number}}/dedicatedparents/gallery-photos/{{this.slug}}" class="fancybox" data-fancybox-group="group1">
-                    <img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_80,w_80/{{this.number}}/dedicatedparents/gallery-photos/{{this.slug}}" alt="{{this.title}}">
+                <a data-fslightbox="gallery" href="{{this.url}}">
+                    <img src="{{cloudinaryTransformation this.url 80 80}}" alt="{{this.title}}">
                 </a>
             </div>
             {{/each}}

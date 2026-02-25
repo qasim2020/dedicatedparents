@@ -92,17 +92,6 @@
 	});
 
 
-
-	//Fancybox Init
-	function initFancyBox(){
-		$('.fancybox').fancybox({
-            openEffect  : 'elastic',
-            prevEffect: 'fade',
-    		nextEffect: 'fade'
-		});
-	}
-
-	initFancyBox();
 	
 
 /*------------------------------------------------------------------------*/

@@ -37,12 +37,7 @@ const all_modules = {
 
     gallery: async function (req, res) {
         let model = await createModel(`${req.params.brand}-gallery`);
-        let output = await model.find().lean();
-        output = output.map(val => {
-            val.number = val.url.split("/image/upload/")[1].split("/dedicatedparents/")[0];
-            val.slug = val.url.split("/gallery-photos/")[1];
-            return val;
-        });
+        let output = await model.find().sort({_id: -1}).lean();
         return output;
     },
 
