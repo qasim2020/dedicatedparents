@@ -71,7 +71,8 @@ const all_modules = {
                     $match: {
                         newDate: {
                             $lt: new Date()
-                        }
+                        },
+                        featured: "true"
                     }
                 },
                 {
@@ -107,7 +108,8 @@ const all_modules = {
                     $match: {
                         newDate: {
                             $gt: new Date() 
-                        }
+                        },
+                        featured: "true"
                     }
                 },
                 {
