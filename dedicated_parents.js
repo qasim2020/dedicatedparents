@@ -7,8 +7,7 @@ import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import bodyParser from 'body-parser';
-
-import config from './config000.json' assert { type: 'json' };
+import dotenv from 'dotenv';
 
 import landingPage from './modules/landingPage.js';
 import events from './modules/events.js';
@@ -31,27 +30,21 @@ import createTicket from './modules/createTicket.js';
 import sendErrorToTelegram from './modules/bot.js';
 
 const app = express();
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 
 if (process.env.NODE_ENV !== 'test') { 
-
-    var envConfig = config['development'];
-    Object.keys(envConfig).forEach((key) => {
-        process.env[key] = envConfig[key];
-    });
-
-
-    connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
+    connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
         .then(() => { console.log('MongoDB connected'); })
         .catch((err) => { console.error('MongoDB connection error:', err); });
 
     mongoose.connection.once('open', () => {
         app.use(
             session({
-                secret: process.env.sessionSecret,
+                secret: process.env.SESSION_SECRET,
                 resave: false,
                 saveUninitialized: true,
                 cookie: {
@@ -59,7 +52,7 @@ if (process.env.NODE_ENV !== 'test') {
                 },
                 rolling: true,
                 store: MongoStore.create({
-                    mongoUrl: process.env.MONGODB_URI
+                    mongoUrl: process.env.MONGO_URI
                 })
             })
         );
@@ -323,7 +316,7 @@ app.use((req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') { 
-    const PORT = 3002;
+    const PORT = Number(process.env.PORT) || 3002;
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
     });

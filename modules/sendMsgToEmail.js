@@ -1,16 +1,13 @@
 import nodemailer from 'nodemailer';
 import fs from 'fs/promises'; 
 import hbs from 'hbs'; 
-import createModel from './createModel.js';
+import Themes from '../models/themes.js';
 import { connect } from 'mongoose';
-import config from '../config000.json' assert { type: 'json' };
+import dotenv from 'dotenv';
 
-var envConfig = config['test'];
-Object.keys(envConfig).forEach((key) => {
-    process.env[key] = envConfig[key];
-});
+dotenv.config();
 
-await connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
+await connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
 .then(() => { console.log('MongoDB connected'); })
 .catch((err) => { console.error('MongoDB connection error:', err); }); 
 
@@ -44,23 +41,32 @@ const sendMsgToEmail = async (req, res) => {
 };
 
 const sendMail = async ({ type, template, context, toEmail, subject, brand, msg }) => {
-    const model = await createModel('myapp-themes');
+    const model = Themes;
     const output = await model.findOne({ brand }).lean();
 
+    // Fallback to .env mail config when brand theme is not present in DB.
+    const host = output?.brandEmailServerLoc?.trim() || process.env.EMAIL_HOST;
+    const user = output?.brandEmail?.trim() || process.env.EMAIL_USER;
+    const pass = output?.brandEmailPassword?.trim() || process.env.EMAIL_PASSWORD;
+
+    if (!host || !user || !pass) {
+        throw new Error('Email settings are not configured. Please update settings first.');
+    }
+
     const transporter = nodemailer.createTransport({
-        host: output.brandEmailServerLoc.trim(),
-        port: 465,
-        secure: true,
+        host,
+        port: Number(process.env.EMAIL_PORT || 465),
+        secure: (process.env.EMAIL_SSL || 'true') === 'true',
         auth: {
-            user: output.brandEmail.trim(),
-            pass: output.brandEmailPassword.trim(),
+            user,
+            pass,
         },
     });
 
     const html = await generateEmailContent({ type, template, context, msg });
     
     const mailOptions = {
-        from: output.brandEmail,
+        from: user,
         to: toEmail,
         subject,
         html,

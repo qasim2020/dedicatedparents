@@ -1,9 +1,9 @@
-import createModel from './createModel.js';
 import sendEmailWithTemplate from './sendEmailWithTemplate.js';
+import Subscribers from '../models/subscribers.js';
 
 const verifyEmail = async function(req,res) {
 
-    let model = await createModel(`${req.params.brand}-subscribers`);
+    const model = Subscribers;
     let output = await model.findOneAndUpdate({
         email: req.query.email,
         _id: req.query.uniqueCode,

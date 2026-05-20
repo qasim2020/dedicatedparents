@@ -1,12 +1,14 @@
 import { sendMail } from './sendMsgToEmail.js';
-import createModel from './createModel.js';
+import Subscribers from '../models/subscribers.js';
+import Newsletters from '../models/newsletters.js';
+import Logs from '../models/logs.js';
 
 const subscribe = async function(req, res) {
     try {
         const { brand } = req.params;
         const { email, firstName, lastName } = req.body;
 
-        const model = await createModel(`${brand}-subscribers`);
+        const model = Subscribers;
         
         const isSubscribed = await checkSubscription(model, email);
         if (isSubscribed) {
@@ -18,10 +20,23 @@ const subscribe = async function(req, res) {
 
         const subscriber = await addOrUpdateSubscriber(model, { firstName, lastName, email });
         const verifyUrl = generateVerificationUrl(brand, email, subscriber._id);
-        const mailResponse = await sendVerificationEmail(brand, subscriber, verifyUrl);
+        let mailResponse = null;
+        let mailWarning = null;
 
-        await logMailEvent(brand, email, mailResponse);
-        return { success: true, output: subscriber };
+        try {
+            mailResponse = await sendVerificationEmail(brand, subscriber, verifyUrl);
+            await logMailEvent(brand, email, mailResponse);
+        } catch (mailError) {
+            console.log(mailError);
+            mailWarning = mailError?.message || 'Verification email failed to send.';
+        }
+
+        return {
+            success: true,
+            output: subscriber,
+            emailSent: Boolean(mailResponse),
+            warning: mailWarning,
+        };
 
     } catch (error) {
         console.log(error);
@@ -54,21 +69,21 @@ const addOrUpdateSubscriber = async (model, subscriberData) => {
 };
 
 const generateVerificationUrl = (brand, email, id) => {
-    return `${process.env.url}/verifyEmail/n?email=${email}&uniqueCode=${id}`;
+    return `${process.env.DOMAIN_URL}/verifyEmail/n?email=${email}&uniqueCode=${id}`;
 };
 
 const sendVerificationEmail = async function(brand, subscriber, verifyUrl) {
-    const mailModel = await createModel(`${brand}-newsletters`);
+    const mailModel = Newsletters;
     const mailTemplate = await mailModel.findOne({ slug: "verify-email" }).lean();
 
     const emailOptions = mailTemplate ? {
         type: "database",
-        from: process.env.zoho,
+        from: process.env.EMAIL_USER,
         context: {
             firstName: subscriber.firstName,
             lastName: subscriber.lastName,
             _id: subscriber._id,
-            env: process.env.url,
+            env: process.env.DOMAIN_URL,
             email: subscriber.email,
         },
         toEmail: subscriber.email,
@@ -76,7 +91,7 @@ const sendVerificationEmail = async function(brand, subscriber, verifyUrl) {
         subject: mailTemplate.subject,
         brand,
     } : {
-        from: process.env.zoho,
+        from: process.env.EMAIL_USER,
         template: 'verifyEmail',
         context: {
             verifyUrl,
@@ -92,7 +107,7 @@ const sendVerificationEmail = async function(brand, subscriber, verifyUrl) {
 };
 
 const logMailEvent = async function(brand, email, mailResponse) {
-    const logModel = await createModel(`${brand}-log`);
+    const logModel = Logs;
     await logModel.create({
         status: 200,
         text: `Email ${mailResponse.slug || 'verify-email'} sent to ${email}`,

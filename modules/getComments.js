@@ -1,14 +1,14 @@
-import createModel from './createModel.js';
+import Comments from '../models/comments.js';
 
 const countComments = async function(req,res) {
-    let modelComments = await createModel(`${req.params.brand}-comments`);
+    const modelComments = Comments;
     let output = await modelComments.countDocuments({approved: "true", slug: req.params.slug}).lean();
     return output;
 };
 
 const getComments = async function(req,res) {
 
-    let commentsModel = await createModel(`${req.params.brand}-comments`);
+    const commentsModel = Comments;
     let output = await commentsModel.find({slug: req.params.slug, approved: "true", replyTo: "none"}).lean();
     let result = await Promise.all( 
         output.map(async val => {

@@ -1,10 +1,12 @@
 import subscribe from '../modules/subscribe.js';
-import createModel from '../modules/createModel.js';
+import Subscribers from '../models/subscribers.js';
 
 describe('subscribe function', () => {
     let req, res;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+        await Subscribers.deleteMany({ email: 'famousfakir@yahoo.com' });
+
         req = {
             params: { brand: 'dedicated_parents' },
             body: {
@@ -17,8 +19,12 @@ describe('subscribe function', () => {
         res = {};
     });
 
+    afterEach(async () => {
+        await Subscribers.deleteMany({ email: 'famousfakir@yahoo.com' });
+    });
+
     it('should return 404 if user is already subscribed', async () => {
-        const model = await createModel('dedicated_parents-subscribers');
+        const model = Subscribers;
         await model.create({
             email: 'famousfakir@yahoo.com',
             firstName: 'John',
@@ -35,7 +41,7 @@ describe('subscribe function', () => {
     });
 
     // it('should successfully subscribe a new user', async () => {
-    //     const model = await createModel('dedicated_parents-subscribers');
+    //     const model = Subscribers;
     //     await model.deleteMany({ email: 'famousfakir@yahoo.com' });
     //     const result = await subscribe(req, res);
     //     const subscriber = await model.findOne({ email: 'famousfakir@yahoo.com' });
@@ -49,13 +55,16 @@ describe('subscribe function', () => {
     //     expect(subscriber).toBeTruthy();
     // });
 
-    it('should return 500 if there is an error during subscription', async () => {
+    it('should allow subscription even when email send fails', async () => {
+        await Subscribers.deleteMany({ email: 'famousfakir@yahoo.com' });
+
         // Simulate an error by providing incorrect brand name
         req.params.brand = 'nonExistantBrand';
 
         const result = await subscribe(req, res);
 
-        expect(result.status).toBe(500);
-        expect(result.error).toBe('Failed to process subscription request.');
+        expect(result.success).toBe(true);
+        expect(result.emailSent).toBe(false);
+        expect(result.warning).toBeTruthy();
     });
 });

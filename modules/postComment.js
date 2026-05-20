@@ -1,10 +1,10 @@
-import createModel from "./createModel.js";
+import Comments from '../models/comments.js';
 
 const postComment = async function(req,res) {
 
-        let model = await createModel(`${req.params.brand}-comments`);
+        const model = Comments;
 
-        let output = model.create({
+        const output = await model.create({
             name: req.body.name,
             email: req.body.email,
             comment: req.body.comment,

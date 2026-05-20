@@ -5,7 +5,7 @@ const landingPage = async function(req, res) {
     let output = {
         events: await all_modules.pastThreeEvents(req,res),
         futureThreeEvents: await all_modules.futureThreeEvents(req,res),
-        futureEvents: await all_modules.futureEvents(req,res),
+        futureEvents: await all_modules.futureFeaturedEvents(req,res),
         staffs: await all_modules.staffs(req,res), 
         causes: await all_modules.causes(req,res),
         gallery: await all_modules.gallery(req,res), 

@@ -1,5 +1,10 @@
+import mongoose from 'mongoose';
 import qpm from 'query-params-mongo';
-import createModel from './createModel.js';
+import Blogs from '../models/blogs.js';
+import Gallery from '../models/gallery.js';
+import Causes from '../models/causes.js';
+import Events from '../models/events.js';
+import Team from '../models/team.js';
 
 let getObjectId = function(val) {
     return mongoose.Types.ObjectId(val);
@@ -13,21 +18,54 @@ var processQuery = qpm({
     converters: {objectId: getObjectId }
 });
 
+const parseEventDate = (event) => {
+    const value = event?.eventDate || event?.date || event?.newDate || null;
+    if (!value) return null;
+
+    const parsed = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed;
+};
+
+const isFeaturedEvent = (event) => {
+    const featureValue = event?.isFeatured ?? event?.featured;
+    if (typeof featureValue === 'boolean') return featureValue;
+    if (typeof featureValue === 'string') {
+        const normalized = featureValue.replace(/^"|"$/g, '').trim().toLowerCase();
+        return normalized === 'true' || normalized === '1' || normalized === 'yes';
+    }
+    if (typeof featureValue === 'number') return featureValue === 1;
+    return false;
+};
+
+const normalizeHomepageEvent = (event) => {
+    const parsedDate = parseEventDate(event);
+    return {
+        ...event,
+        title: event?.title || event?.name || 'Untitled Event',
+        bannerImg: event?.bannerImg || event?.coverImageUrl || '',
+        summary: event?.summary || event?.excerpt || '',
+        date: event?.date || (parsedDate ? parsedDate.toISOString() : ''),
+        parsedDate,
+        featuredResolved: isFeaturedEvent(event),
+    };
+};
+
 const all_modules = {
     twoBlogs: async function (req, res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
         let blogs = await model.find({ visibility: "blog" }).limit(2);
         return blogs;
     },
 
     footerBlogs: async function (req, res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
         let blogs = await model.find({ visibility: "page" }).limit(5);
         return blogs;
     },
 
     threePages: async function (req, res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
         return {
             education: await model.findOne({ slug: "education" }).lean(),
             helpAndSupport: await model.findOne({ slug: "help-and-support" }).lean(),
@@ -36,13 +74,14 @@ const all_modules = {
     },
 
     gallery: async function (req, res) {
-        let model = await createModel(`${req.params.brand}-gallery`);
-        let output = await model.find().sort({_id: -1}).lean();
+        const model = Gallery;
+        // Keep website gallery placement consistent with dp-admin latest-first ordering.
+        let output = await model.find().sort({ sortOrder: -1, createdAt: -1, _id: -1 }).lean();
         return output;
     },
 
     causes: async function (req, res) {
-        let model = await createModel(`${req.params.brand}-causes`);
+        const model = Causes;
         let output = await model.find().lean();
         output = output.map(val => {
             val.number = val.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
@@ -55,36 +94,14 @@ const all_modules = {
     pastThreeEvents: async function (req, res) {
 
         req.query = processQuery(req.query);
-        let model = await createModel(`${req.params.brand}-events`);
-        let output = await model.aggregate([
-            [
-                {
-                    $addFields: {
-                        newDate: {
-                            $dateFromString: {
-                                dateString: "$date",
-                            }
-                        }
-                    },
-                },
-                {
-                    $match: {
-                        newDate: {
-                            $lt: new Date()
-                        },
-                        featured: "true"
-                    }
-                },
-                {
-                    $sort: {
-                        newDate: -1
-                    }
-                },
-                {
-                    $limit: 3
-                }
-            ]
-        ]);
+        const model = Events;
+        const now = new Date();
+        const output = (await model.find().lean())
+            .map(normalizeHomepageEvent)
+            .filter((event) => event.featuredResolved && event.parsedDate && event.parsedDate < now)
+            .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime())
+            .slice(0, 3);
+
         return output;
 
     },
@@ -92,68 +109,27 @@ const all_modules = {
     futureThreeEvents: async function (req, res) {
     
         req.query = processQuery(req.query);
-        let model = await createModel(`${req.params.brand}-events`);
-        let output = await model.aggregate([
-            [
-                {
-                    $addFields: {
-                        newDate: {
-                            $dateFromString: {
-                                dateString: "$date",
-                            }
-                        }
-                    },
-                },
-                {
-                    $match: {
-                        newDate: {
-                            $gt: new Date() 
-                        },
-                        featured: "true"
-                    }
-                },
-                {
-                    $sort: {
-                        newDate: 1 
-                    }
-                },
-                {
-                    $limit: 3 
-                }
-            ]
-        ]);
+        const model = Events;
+        const now = new Date();
+        const output = (await model.find().lean())
+            .map(normalizeHomepageEvent)
+            .filter((event) => event.featuredResolved && event.parsedDate && event.parsedDate > now)
+            .sort((a, b) => a.parsedDate.getTime() - b.parsedDate.getTime())
+            .slice(0, 3);
+
         return output;
     
     },    
 
     pastEvents: async function (req, res) {
         req.query = processQuery(req.query);
-        let model = await createModel(`${req.params.brand}-events`);
-        let output = await model.aggregate([
-            [
-                {
-                    $addFields: {
-                        newDate: {
-                            $dateFromString: {
-                                dateString: "$date",
-                            }
-                        }
-                    },
-                },
-                {
-                    $match: {
-                        newDate: {
-                            $lt: new Date()
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        newDate: -1
-                    }
-                }
-            ]
-        ]);
+        const model = Events;
+        const now = new Date();
+        const output = (await model.find().lean())
+            .map(normalizeHomepageEvent)
+            .filter((event) => event.parsedDate && event.parsedDate < now)
+            .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime());
+
         return output;
 
     },
@@ -161,44 +137,40 @@ const all_modules = {
     futureEvents: async function (req, res) {
 
         req.query = processQuery(req.query);
-        let model = await createModel(`${req.params.brand}-events`);
-        let output = await model.aggregate([
-            [
-                {
-                    $addFields: {
-                        newDate: {
-                            $dateFromString: {
-                                dateString: "$date",
-                            }
-                        }
-                    },
-                },
-                {
-                    $match: {
-                        newDate: {
-                            $gt: new Date()
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        newDate: -1
-                    }
-                }
-            ]
-        ]);
+        const model = Events;
+        const now = new Date();
+        const output = (await model.find().lean())
+            .map(normalizeHomepageEvent)
+            .filter((event) => event.parsedDate && event.parsedDate > now)
+            .sort((a, b) => a.parsedDate.getTime() - b.parsedDate.getTime());
+
+        return output;
+
+    },
+
+    futureFeaturedEvents: async function (req, res) {
+
+        req.query = processQuery(req.query);
+        const model = Events;
+        const now = new Date();
+        const output = (await model.find().lean())
+            .map(normalizeHomepageEvent)
+            .filter((event) => event.parsedDate && event.parsedDate > now && event.featuredResolved)
+            .sort((a, b) => a.parsedDate.getTime() - b.parsedDate.getTime());
+
         return output;
 
     },
 
     staffs: async function (req, res) {
-        let model = await createModel(`${req.params.brand}-staffs`);
-        let output = await model.find().lean();
+        const model = Team;
+        // Keep website team sequence consistent with dp-admin drag/drop ordering.
+        let output = await model.find().sort({ sortOrder: -1, createdAt: -1, _id: -1 }).lean();
         return output;
     },
 
     blogPosts: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
         let output = await model.find({visibility: "blog"}).sort({_id: -1}).lean();
         output = output.map( val => {
             val.number = val.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
@@ -209,7 +181,7 @@ const all_modules = {
     },
 
     pages: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
         let output = await model.find({visibility: "page"}).sort({_id: -1}).lean();
         output = output.map( val => {
             val.number = val.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
@@ -220,7 +192,7 @@ const all_modules = {
     },
 
     blog: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
 
         // Find the current document based on the slug
         let currentDocument = await model.findOne({ slug: req.params.slug }).lean();
@@ -262,7 +234,7 @@ const all_modules = {
     },
 
     page: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-blogs`);
+        const model = Blogs;
 
         // Find the current document based on the slug
         let currentDocument = await model.findOne({ slug: req.params.slug }).lean();
@@ -304,7 +276,7 @@ const all_modules = {
     },
 
     getCause: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-causes`);
+        const model = Causes;
 
         // Find the current document based on the slug
         let currentDocument = await model.findOne({ slug: req.params.slug }).lean();
@@ -341,7 +313,7 @@ const all_modules = {
     },
 
     getStaff: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-staffs`);
+        const model = Team;
 
         // Find the current document based on the slug
         let currentDocument = await model.findOne({ slug: req.params.slug }).lean();
@@ -376,7 +348,7 @@ const all_modules = {
     },
 
     getEvent: async function(req,res) {
-        let model = await createModel(`${req.params.brand}-events`);
+        const model = Events;
 
         // Find the current document based on the slug
         let currentDocument = await model.findOne({ slug: req.params.slug }).lean();

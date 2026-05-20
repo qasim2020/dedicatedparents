@@ -1,8 +1,8 @@
-import createModel from "./createModel.js";
+import Tickets from '../models/tickets.js';
 
 const createTicket = async function(req,res) {
 
-        let model = await createModel(`${req.params.brand}-tickets`);
+        const model = Tickets;
 
         let output = await model.create({
             name: req.body.firstName + " " + req.body.lastName,
