@@ -112,7 +112,7 @@ hbs.registerHelper('reduceStringLength', function(string, length) {
 });
 
 hbs.registerHelper('toUpperCase', (str) => {
-    return str.toUpperCase()
+    return String(str || '').toUpperCase()
 });
 
 hbs.registerHelper('splitComma', (val) => {
@@ -285,11 +285,14 @@ app.post('/subscribe', async (req,res) => {
     }
 });
 
-app.get('/verifyEmail', async (req,res) => {
+const handleVerifyEmail = async (req,res) => {
     req.params.brand = "dedicated_parents";
     const data = await verifyEmail(req,res);
     res.render('verifyEmail', data);
-});
+};
+
+app.get('/verifyEmail', handleVerifyEmail);
+app.get('/verifyEmail/n', handleVerifyEmail);
 
 app.post('/postComment', async (req,res) => {
     req.params.brand = "dedicated_parents";

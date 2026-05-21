@@ -2,14 +2,9 @@ import nodemailer from 'nodemailer';
 import fs from 'fs/promises'; 
 import hbs from 'hbs'; 
 import Themes from '../models/themes.js';
-import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
-await connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, })
-.then(() => { console.log('MongoDB connected'); })
-.catch((err) => { console.error('MongoDB connection error:', err); }); 
 
 const sendMsgToEmail = async (req, res) => {
     const { msgText, toEmail, msgSubject } = req.body;

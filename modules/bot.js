@@ -6,7 +6,7 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const sendErrorToTelegram = async function (errorObj) {
 
-    if (process.env.ENV === 'test') {
+    if (process.env.NODE_ENV === 'test' || process.env.ENV === 'test') {
         console.log('Skipping Telegram message in test environment');
         return;
     }

@@ -1,5 +1,14 @@
 import subscribe from '../modules/subscribe.js';
 import Subscribers from '../models/subscribers.js';
+import mongoose from 'mongoose';
+
+beforeAll(async () => {
+    await mongoose.connect(process.env.MONGO_URI);
+});
+
+afterAll(async () => {
+    await mongoose.disconnect();
+});
 
 describe('subscribe function', () => {
     let req, res;
@@ -60,8 +69,15 @@ describe('subscribe function', () => {
 
         // Simulate an error by providing incorrect brand name
         req.params.brand = 'nonExistantBrand';
+        const originalEmailHost = process.env.EMAIL_HOST;
+        process.env.EMAIL_HOST = '';
 
-        const result = await subscribe(req, res);
+        let result;
+        try {
+            result = await subscribe(req, res);
+        } finally {
+            process.env.EMAIL_HOST = originalEmailHost;
+        }
 
         expect(result.success).toBe(true);
         expect(result.emailSent).toBe(false);

@@ -319,7 +319,12 @@ const all_modules = {
         let currentDocument = await model.findOne({ slug: req.params.slug }).lean();
 
         if (!currentDocument) {
-            return res.status(404).json({ message: 'Document not found' });
+            res.status(404);
+            return {
+                current: {},
+                next: {},
+                prev: {}
+            };
         }
 
         // Find the next document (using _id for simplicity, assuming it's auto-incremented or timestamped)

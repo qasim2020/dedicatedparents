@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../dp2.js';
+import { app } from '../dedicated_parents.js';
 
 describe('POST /sendMsgToEmail', () => {
 

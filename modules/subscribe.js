@@ -6,7 +6,15 @@ import Logs from '../models/logs.js';
 const subscribe = async function(req, res) {
     try {
         const { brand } = req.params;
-        const { email, firstName, lastName } = req.body;
+        const { firstName, lastName } = req.body;
+        const email = String(req.body.email || '').trim().toLowerCase();
+
+        if (!firstName || !lastName || !email) {
+            return {
+                status: 400,
+                error: 'Required fields are missing.'
+            };
+        }
 
         const model = Subscribers;
         

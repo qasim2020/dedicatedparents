@@ -148,23 +148,25 @@ $(document).ready(function() {
             });
         };
 
-        const getBrowserLocationAndSendEmail = () => {
-            $.get('https://json.geoiplookup.io/')
-                .done((res) => {
-                    const msg = `
+        const sendContactRequest = (locationData) => {
+            const msg = `
 New message sent from dedicatedparents.org contact form. <br>
 First Name: ${firstName}, <br>
 Last Name: ${lastName}, <br>
 User Email: ${userEmail}, <br>
 User Message: ${userMessage} <br>
 Browser Location: <br>
-${JSON.stringify(res)}`;
-                    createTicket(msg, res);
-                    sendEmail(msg);
-                })
+${JSON.stringify(locationData)}`;
+            createTicket(msg, locationData);
+            sendEmail(msg);
+        };
+
+        const getBrowserLocationAndSendEmail = () => {
+            $.get('https://json.geoiplookup.io/')
+                .done(sendContactRequest)
                 .fail((err) => {
                     console.error(err);
-                    alert('Failed to get browser location.');
+                    sendContactRequest({ locationLookupFailed: true });
                 });
         };
 
