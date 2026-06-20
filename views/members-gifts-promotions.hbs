@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>Gifts & Promotions | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="page-header no-border">
+            <h2 class="page-title">Gifts & Promotions</h2>
+        </div>
+        <div class="row">
+            {{#if giftPromotions.length}}
+                {{#each giftPromotions}}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="blog-grid-item">
+                            <div class="blog-thumb">
+                                <img src="{{#if this.imageUrl}}{{this.imageUrl}}{{else}}/images/gallery-placeholder.png{{/if}}" alt="{{this.name}}">
+                            </div>
+                            <div class="blog-content">
+                                <h4 class="blog-title">{{this.name}}</h4>
+                                <p>{{this.description}}</p>
+                                <p style="margin-top: 10px;">
+                                    <a class="mainBtn" href="{{this.url}}" target="_blank" rel="noopener noreferrer" style="padding:8px 12px; display:inline-block;">
+                                        Avail Offer
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            {{else}}
+                <div class="col-md-12">
+                    <p>No gifts or promotions are available right now.</p>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+    {{> footer}}
+</body>
+</html>

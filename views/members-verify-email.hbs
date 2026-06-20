@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>Email Verification | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-center">
+                <div class="page-header"><h2 class="page-title">Member Verification</h2></div>
+                <p class="{{#if success}}alert alert-success{{else}}error{{/if}}">{{message}}</p>
+                <p><a href="/members/login">Continue to login</a></p>
+            </div>
+        </div>
+    </div>
+    {{> footer}}
+</body>
+</html>

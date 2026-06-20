@@ -84,8 +84,15 @@ const all_modules = {
         const model = Causes;
         let output = await model.find().lean();
         output = output.map(val => {
-            val.number = val.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
-            val.imgSlug = val.bannerImg.split("/causes-photos/")[1];
+            const sourceImage = val.coverImageUrl || val.bannerImg || '';
+            val.bannerImg = sourceImage;
+            if (sourceImage.includes('/image/upload/') && sourceImage.includes('/causes-photos/')) {
+                val.number = sourceImage.split('/image/upload/')[1].split('/dedicatedparents/')[0];
+                val.imgSlug = sourceImage.split('/causes-photos/')[1];
+            } else {
+                val.number = '';
+                val.imgSlug = '';
+            }
             return val;
         });
         return output;
@@ -285,8 +292,14 @@ const all_modules = {
             return res.status(404).json({ message: 'Document not found' });
         };
 
-        currentDocument.number = currentDocument.bannerImg.split("/image/upload/")[1].split("/dedicatedparents/")[0];
-        currentDocument.imgSlug = currentDocument.bannerImg.split("/causes-photos/")[1];
+        currentDocument.bannerImg = currentDocument.coverImageUrl || currentDocument.bannerImg || '';
+        if (currentDocument.bannerImg.includes('/image/upload/') && currentDocument.bannerImg.includes('/causes-photos/')) {
+            currentDocument.number = currentDocument.bannerImg.split('/image/upload/')[1].split('/dedicatedparents/')[0];
+            currentDocument.imgSlug = currentDocument.bannerImg.split('/causes-photos/')[1];
+        } else {
+            currentDocument.number = '';
+            currentDocument.imgSlug = '';
+        }
 
         // Find the next document (using _id for simplicity, assuming it's auto-incremented or timestamped)
         let nextDocument = await model.findOne({ _id: { $gt: currentDocument._id } }).sort({ _id: 1 }).lean();

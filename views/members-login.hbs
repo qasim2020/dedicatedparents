@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>Members Login | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="page-header"><h2 class="page-title">Members Login</h2></div>
+                <div class="contact-form">
+                    {{#if message}}
+                    <div style="margin-bottom:12px; padding:12px 14px; border-radius:8px; border:1px solid #efc2c2; background:#fff1f1; color:#932222;">
+                        {{message}}
+                    </div>
+                    {{/if}}
+                    <p>Email</p>
+                    <input id="memberEmail" type="email" class="form-control" placeholder="Email">
+                    <p style="margin-top:10px;">Password</p>
+                    <input id="memberPassword" type="password" class="form-control" placeholder="Password">
+                    <button id="memberLoginBtn" class="mainBtn" style="margin-top:15px;">Log In</button>
+                    <div id="memberLoginFeedback" style="display:none; margin-top:12px; padding:12px 14px; border-radius:8px;"></div>
+                    <p style="margin-top:15px;">
+                        <a href="/members/signup">Create account</a> |
+                        <a href="/members/forgot-password">Forgot password</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{> footer}}
+    <script>
+      document.getElementById('memberLoginBtn').addEventListener('click', async () => {
+        const email = document.getElementById('memberEmail').value;
+        const password = document.getElementById('memberPassword').value;
+        const feedback = document.getElementById('memberLoginFeedback');
+
+        function showFeedback(message) {
+          feedback.style.display = 'block';
+          feedback.textContent = message;
+          feedback.style.background = '#fff1f1';
+          feedback.style.border = '1px solid #efc2c2';
+          feedback.style.color = '#932222';
+        }
+
+        const res = await fetch('/members/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showFeedback(data.error || 'Login failed');
+          return;
+        }
+
+        window.location.href = data.redirect || '/members/webinars';
+      });
+    </script>
+</body>
+</html>

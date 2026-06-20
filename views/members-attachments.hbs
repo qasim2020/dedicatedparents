@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>Member Attachments | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="page-header no-border">
+            <h2 class="page-title">Member Attachments</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-unstyled">
+                    {{#if attachments.length}}
+                        {{#each attachments}}
+                            <li style="margin-bottom:12px;">
+                                <button class="mainBtn attachment-download" data-webinar-id="{{this.webinarId}}" data-attachment-id="{{this._id}}" style="padding:8px 12px;">
+                                    Download {{this.label}}
+                                </button>
+                                <span style="margin-left:10px;">from <a href="/members/webinars/{{this.webinarSlug}}">{{this.webinarTitle}}</a></span>
+                            </li>
+                        {{/each}}
+                    {{else}}
+                        <li>No attachments are available right now.</li>
+                    {{/if}}
+                </ul>
+                <div id="attachmentFeedback" style="display:none; margin-top:12px; padding:12px 14px; border-radius:8px;"></div>
+            </div>
+        </div>
+    </div>
+    {{> footer}}
+    <script>
+      const attachmentFeedback = document.getElementById('attachmentFeedback');
+      function showAttachmentFeedback(message) {
+        attachmentFeedback.style.display = 'block';
+        attachmentFeedback.textContent = message;
+        attachmentFeedback.style.background = '#fff1f1';
+        attachmentFeedback.style.border = '1px solid #efc2c2';
+        attachmentFeedback.style.color = '#932222';
+      }
+
+      document.querySelectorAll('.attachment-download').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const webinarId = btn.dataset.webinarId;
+          const attachmentId = btn.dataset.attachmentId;
+
+          const res = await fetch(`/members/webinars/${webinarId}/attachments/${attachmentId}/signed-download`, {
+            method: 'POST'
+          });
+
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.url) {
+            showAttachmentFeedback(data.error || 'Could not generate download link');
+            return;
+          }
+
+          window.location.href = data.url;
+        });
+      });
+    </script>
+</body>
+</html>

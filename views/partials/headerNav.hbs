@@ -20,6 +20,21 @@
                                     <li {{#if (matchValues 'contact' active)}}class="active"{{/if}}>
                                         <a href="/contact-us">Contact</a>
                                     </li>
+                                    <li {{#if (matchValues 'members' active)}}class="active"{{/if}}>
+                                        <a href="{{#if member.id}}/members/webinars{{else}}/members/login{{/if}}">Members</a>
+                                        {{#if member.id}}
+                                        <ul>
+                                            <li><a href="/members/webinars">Webinars</a></li>
+                                            <li><a href="/members/attachments">Attachments</a></li>
+                                            <li><a href="/members/gifts-promotions">Gifts & Promotions</a></li>
+                                        </ul>
+                                        {{/if}}
+                                    </li>
+                                    {{#if member.id}}
+                                    <li>
+                                        <a href="/members/logout">Logout</a>
+                                    </li>
+                                    {{/if}}
                                 </ul>
                             </nav>
                         </div>
@@ -39,6 +54,13 @@
                                                         <i class="fa fa-envelope-o"></i>dedicatedparents2018@gmail.com
                                                     </a>
                                                 </li>
+                                                {{#if member.id}}
+                                                <li>
+                                                    <a href="/members/webinars">
+                                                        <i class="fa fa-user"></i>{{member.name}}
+                                                    </a>
+                                                </li>
+                                                {{/if}}
                                             </ul>
                                         </div>
                                     </div>
@@ -100,6 +122,17 @@
 </ul>
 </li>
 <li {{#if (matchValues 'contact' active)}}class="active"{{/if}}><a href="/contact-us">Contact</a></li>
+<li {{#if (matchValues 'members' active)}}class="active"{{/if}}>
+    <a href="{{#if member.id}}/members/webinars{{else}}/members/login{{/if}}">Members</a>
+    {{#if member.id}}
+    <ul>
+        <li><a href="/members/webinars">Webinars</a></li>
+        <li><a href="/members/attachments">Attachments</a></li>
+        <li><a href="/members/gifts-promotions">Gifts & Promotions</a></li>
+    </ul>
+    {{/if}}
+</li>
+{{#if member.id}}<li><a href="/members/logout">Logout</a></li>{{/if}}
                                                 </ul>
                                             </nav>
                                         </div>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>{{webinar.title}} | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 class="page-title">{{webinar.title}}</h2>
+                </div>
+                <div class="col-md-4 text-right">
+                    <a href="/members/webinars">Back to Webinars</a>
+                </div>
+            </div>
+        </div>
+
+        {{#if webinar.embedUrl}}
+            <div style="position:relative;padding-top:56.25%;margin-bottom:20px;">
+                <iframe src="{{webinar.embedUrl}}" style="border:none;position:absolute;top:0;left:0;height:100%;width:100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe>
+            </div>
+        {{/if}}
+
+        <div class="event-content">
+            <p>{{webinar.summary}}</p>
+            <div>{{{webinar.content}}}</div>
+        </div>
+
+        <div class="page-header no-border" style="margin-top:20px;">
+            <h3 class="page-title">Attachments</h3>
+        </div>
+        <ul class="list-unstyled" id="attachmentList">
+            {{#if webinar.attachments.length}}
+                {{#each webinar.attachments}}
+                    <li style="margin-bottom:10px;">
+                        <button class="mainBtn attachment-download" data-webinar-id="{{../webinar._id}}" data-attachment-id="{{this._id}}" style="padding:8px 12px;">
+                            Download {{this.label}}
+                        </button>
+                    </li>
+                {{/each}}
+            {{else}}
+                <li>No attachments yet.</li>
+            {{/if}}
+        </ul>
+        <div id="attachmentFeedback" style="display:none; margin-top:12px; padding:12px 14px; border-radius:8px;"></div>
+    </div>
+    {{> footer}}
+    <script>
+      const attachmentFeedback = document.getElementById('attachmentFeedback');
+      function showAttachmentFeedback(message) {
+        attachmentFeedback.style.display = 'block';
+        attachmentFeedback.textContent = message;
+        attachmentFeedback.style.background = '#fff1f1';
+        attachmentFeedback.style.border = '1px solid #efc2c2';
+        attachmentFeedback.style.color = '#932222';
+      }
+
+      document.querySelectorAll('.attachment-download').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const webinarId = btn.dataset.webinarId;
+          const attachmentId = btn.dataset.attachmentId;
+
+          const res = await fetch(`/members/webinars/${webinarId}/attachments/${attachmentId}/signed-download`, {
+            method: 'POST'
+          });
+
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.url) {
+            showAttachmentFeedback(data.error || 'Could not generate download link');
+            return;
+          }
+
+          window.location.href = data.url;
+        });
+      });
+    </script>
+</body>
+</html>

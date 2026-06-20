@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>Member Webinars | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="page-header no-border">
+            <h2 class="page-title">Member Webinars</h2>
+        </div>
+        <div class="row">
+            {{#if webinars.length}}
+                {{#each webinars}}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="blog-grid-item">
+                            <div class="blog-thumb">
+                                <a href="/members/webinars/{{this.slug}}">
+                                    <img src="{{#if this.thumbnailUrl}}{{this.thumbnailUrl}}{{else}}/images/gallery-placeholder.png{{/if}}" alt="{{this.title}}">
+                                </a>
+                            </div>
+                            <div class="blog-content">
+                                <h4 class="blog-title"><a href="/members/webinars/{{this.slug}}">{{this.title}}</a></h4>
+                                <p>{{this.summary}}</p>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            {{else}}
+                <div class="col-md-12">
+                    <p>No webinars are available right now.</p>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+    {{> footer}}
+</body>
+</html>

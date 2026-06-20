@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>Members Signup | Dedicated Parents</title>
+    {{> header img=meta.img}}
+</head>
+<body>
+    {{> headerNav active='members'}}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="page-header"><h2 class="page-title">Create Member Account</h2></div>
+                <div class="contact-form">
+                    {{#if inviteError}}
+                    <div style="margin-bottom:12px; padding:12px 14px; border-radius:8px; border:1px solid #efc2c2; background:#fff1f1; color:#932222;">
+                        <div>{{inviteError}}</div>
+                        <div style="margin-top:10px;">
+                            <a href="/members/forgot-password" class="mainBtn" style="display:inline-block; padding:8px 12px; text-decoration:none;">Request New Invite</a>
+                        </div>
+                        <small style="display:block; margin-top:8px; color:#8d5555;">
+                            Use the same email address that was invited.
+                        </small>
+                    </div>
+                    {{/if}}
+                    <p>Name</p>
+                    <input id="memberName" class="form-control" placeholder="Your full name" value="{{inviteName}}">
+                    <p style="margin-top:10px;">Email</p>
+                    <input id="memberEmail" type="email" class="form-control" placeholder="Email" value="{{invitedEmail}}" {{#if inviteMode}}disabled{{/if}}>
+                    {{#if inviteMode}}
+                    <input id="inviteToken" type="hidden" value="{{inviteToken}}">
+                    <small style="display:block; margin-top:6px; color:#587294;">This invited email cannot be changed.</small>
+                    {{/if}}
+                    <p style="margin-top:10px;">Password</p>
+                    <input id="memberPassword" type="password" class="form-control" placeholder="Strong password">
+                    <button id="memberSignupBtn" class="mainBtn" style="margin-top:15px;">{{#if inviteMode}}Complete Registration{{else}}Create Account{{/if}}</button>
+                    <div id="memberSignupFeedback" style="display:none; margin-top:12px; padding:12px 14px; border-radius:8px;"></div>
+                    <p style="margin-top:15px;"><a href="/members/login">Back to login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{> footer}}
+    <script>
+      document.getElementById('memberSignupBtn').addEventListener('click', async () => {
+        const payload = {
+          name: document.getElementById('memberName').value,
+          email: document.getElementById('memberEmail').value,
+          password: document.getElementById('memberPassword').value,
+          inviteToken: document.getElementById('inviteToken') ? document.getElementById('inviteToken').value : '',
+        };
+        const feedback = document.getElementById('memberSignupFeedback');
+
+        function showFeedback(message, type) {
+          feedback.style.display = 'block';
+          feedback.textContent = message;
+          if (type === 'success') {
+            feedback.style.background = '#edf9ef';
+            feedback.style.border = '1px solid #b7e2bf';
+            feedback.style.color = '#1f6b2a';
+          } else {
+            feedback.style.background = '#fff1f1';
+            feedback.style.border = '1px solid #efc2c2';
+            feedback.style.color = '#932222';
+          }
+        }
+
+        const res = await fetch('/members/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showFeedback(data.error || 'Signup failed', 'error');
+          return;
+        }
+
+        showFeedback(data.warning || data.message || 'Signup successful. Check your email.', 'success');
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        }
+      });
+    </script>
+</body>
+</html>
