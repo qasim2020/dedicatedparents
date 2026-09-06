@@ -166,14 +166,20 @@ hbs.registerHelper('matchValues', (val1,val2) => {
     }
 });
 
-hbs.registerHelper('cloudinaryTransformation', (url, height, width) => {
+hbs.registerHelper('cloudinaryTransformation', (url, height, width, crop) => {
     if (!url || typeof url !== 'string') {
         return '';
     }
     if (!url.includes('/upload/')) {
         return url;
     }
-    const transformation = `w_${width},h_${height},c_lpad`;
+    // Optional 4th arg selects the crop mode; defaults to lpad for backward compatibility.
+    const mode = (typeof crop === 'string' && crop) ? crop : 'lpad';
+    // dpr_auto + q_auto:good keep images crisp on high-density (retina) displays.
+    let transformation = `w_${width},h_${height},c_${mode},q_auto:good,f_auto,dpr_auto`;
+    if (mode === 'fill' || mode === 'crop' || mode === 'thumb') {
+        transformation += ',g_auto';
+    }
     return url.replace('/upload/', `/upload/${transformation}/`);
 })
 

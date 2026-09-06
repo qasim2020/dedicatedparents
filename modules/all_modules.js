@@ -375,6 +375,25 @@ const all_modules = {
             return res.status(404).json({ message: 'Document not found' });
         }
 
+        // CMS (dp-admin) stores the image under coverImageUrl; the view expects bannerImg.
+        currentDocument.bannerImg = currentDocument.coverImageUrl || currentDocument.bannerImg || '';
+
+        // CMS stores the description under content; the view expects detail.
+        currentDocument.detail = currentDocument.content || currentDocument.detail || '';
+
+        // CMS stores dates as eventDate/eventEndDate; the view expects date + formatted strings.
+        const formatDMY = (value) => {
+            const d = value instanceof Date ? value : new Date(value);
+            if (Number.isNaN(d.getTime())) return '';
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
+        };
+        const eventDate = parseEventDate(currentDocument);
+        const endDateValue = currentDocument.eventEndDate || currentDocument.endDate || null;
+        currentDocument.date = eventDate || currentDocument.date || '';
+        currentDocument.dateFormatted = eventDate ? formatDMY(eventDate) : '';
+        currentDocument.endDateFormatted = endDateValue ? formatDMY(endDateValue) : '';
+
         // Find the next document (using _id for simplicity, assuming it's auto-incremented or timestamped)
         let nextDocument = await model.findOne({ _id: { $gt: currentDocument._id } }).sort({ _id: 1 }).lean();
 

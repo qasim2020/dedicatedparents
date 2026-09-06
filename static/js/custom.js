@@ -76,15 +76,17 @@
 	        timeoutDuration: 0,
 	        pauseOnHover: 'immediate'
 	    };
-	    jQuery('.inner-carousel').carouFredSel({
-	        width: 1000,
-	        align: false,
-	        items: {
-	            width: 'variable',
-	            height: 30,
-	            visible: 1
-	        },
-	        scroll: _scroll
+	    jQuery('.inner-carousel').each(function() {
+	        jQuery(this).carouFredSel({
+	            width: 1000,
+	            align: false,
+	            items: {
+	                width: 'variable',
+	                height: 30,
+	                visible: 1
+	            },
+	            scroll: _scroll
+	        });
 	    });
 
 	    //  set carousels to be 100% wide
