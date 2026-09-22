@@ -7,7 +7,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
     <head>
         <title>{{staff.current.title}} / {{staff.current.role}}</title>
-        {{> header img=(concat "https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_630,w_1200/v1680079430/dedicatedparents/team-photos/" staff.current.image)}}
+        {{> header img=(cloudinaryTransformation staff.current.imageSrc 630 1200)}}
     </head>
     <body>
         {{> headerNav active='staffs'}}
@@ -27,7 +27,7 @@
 				<div class="col-md-8">
 					<div class="member-single">
 						<div class="member-image">
-							<img src="https://res.cloudinary.com/miscellaneous/image/upload/c_lpad,h_365,w_770/v1680079430/dedicatedparents/team-photos/{{staff.current.image}}" alt="">
+							<img src="{{cloudinaryTransformation staff.current.imageSrc 365 770}}" alt="">
 						</div> <!-- /.member-image -->
 						<div class="member-content">
 							<div class="member-header">

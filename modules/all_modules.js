@@ -18,6 +18,23 @@ var processQuery = qpm({
     converters: {objectId: getObjectId }
 });
 
+const CLOUDINARY_TEAM_BASE = "https://res.cloudinary.com/miscellaneous/image/upload";
+const LEGACY_TEAM_VERSION = "v1680079430";
+const LEGACY_TEAM_FOLDER = "dedicatedparents/team-photos";
+
+// Resolve the base display URL for a team member image. Prefers the full
+// Cloudinary URL stored by the CMS (imageUrl); falls back to legacy filename
+// records. Sizing is applied per-view via the cloudinaryTransformation helper.
+const resolveTeamImage = (member) => {
+    if (!member || typeof member !== 'object') return '';
+    const fullUrl = member.imageUrl || member.imageURL || '';
+    if (fullUrl) return fullUrl;
+    if (member.image) {
+        return `${CLOUDINARY_TEAM_BASE}/${LEGACY_TEAM_VERSION}/${LEGACY_TEAM_FOLDER}/${member.image}`;
+    }
+    return '';
+};
+
 const parseEventDate = (event) => {
     const value = event?.eventDate || event?.date || event?.newDate || null;
     if (!value) return null;
@@ -173,6 +190,10 @@ const all_modules = {
         const model = Team;
         // Keep website team sequence consistent with dp-admin drag/drop ordering.
         let output = await model.find().sort({ sortOrder: -1, createdAt: -1, _id: -1 }).lean();
+        output = output.map((member) => ({
+            ...member,
+            imageSrc: resolveTeamImage(member),
+        }));
         return output;
     },
 
@@ -355,6 +376,8 @@ const all_modules = {
         if (!prevDocument) {
             prevDocument = await model.findOne().sort({ _id: -1 }).lean();
         }
+
+        currentDocument.imageSrc = resolveTeamImage(currentDocument);
 
         // Return the current, next, and previous documents
         return {
